@@ -1,4 +1,4 @@
-package com.semenov.yandex.practicum.algorithms.algorithms.sprint1
+package com.semenov.yandex.practicum.sprint1
 
 
 fun main() {
