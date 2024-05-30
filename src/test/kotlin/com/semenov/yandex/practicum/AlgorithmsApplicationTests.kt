@@ -1,4 +1,4 @@
-package com.semenov.yandex.practicum.algorithms.algorithms
+package com.semenov.yandex.practicum
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest

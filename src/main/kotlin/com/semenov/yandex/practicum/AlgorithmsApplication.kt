@@ -1,4 +1,4 @@
-package com.semenov.yandex.practicum.algorithms.algorithms
+package com.semenov.yandex.practicum
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
