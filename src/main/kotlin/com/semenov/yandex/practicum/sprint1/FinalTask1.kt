@@ -1,19 +1,20 @@
 package com.semenov.yandex.practicum.sprint1
 
 import kotlin.math.abs
+import kotlin.math.min
 
 
 fun main() {
-    val length = readln().toInt()
+    readln().toInt()
     val homeNumbers = readln().split(" ").map { it.toInt() }
 
-    val toNearestZero = toNearestZero(length, homeNumbers)
+    val toNearestZero = toNearestZero(homeNumbers)
 
     println(toNearestZero.joinToString(" "))
 }
 
-private fun toNearestZero(length: Int, homeNumbers: List<Int>): List<Int> {
-    val result = MutableList(length) { 0 }
+private fun toNearestZero(homeNumbers: List<Int>): List<Int> {
+    val result = MutableList(homeNumbers.size) { 0 }
     val zeroIndexes = mutableListOf<Int>()
 
     homeNumbers.forEachIndexed { index, value ->
@@ -22,15 +23,25 @@ private fun toNearestZero(length: Int, homeNumbers: List<Int>): List<Int> {
         }
     }
 
-    for (i in 0 until length) { // проходим весь цикл
+    var index = 0
+    var leftZeroIndex = zeroIndexes[index]
+    var rightZeroIndex = zeroIndexes.getOrNull(++index) ?: leftZeroIndex
+
+    for (i in homeNumbers.indices) {
+        if (rightZeroIndex == i) {
+            leftZeroIndex = rightZeroIndex
+            rightZeroIndex = zeroIndexes.getOrNull(++index) ?: leftZeroIndex
+        }
         if (homeNumbers[i] != 0) {
-            val nearestZeroIndex = zeroIndexes.minBy { abs(it - i) }
-            result[i] = abs(nearestZeroIndex - i)
+            result[i] = min(
+                abs(i - leftZeroIndex),
+                abs(i - rightZeroIndex)
+            )
         }
     }
-
     return result
 }
+
 /**
 Все языки	3 секунды	256Mb	стандартный ввод или input.txt	стандартный вывод или output.txt
 Node.js 14.15.5	1.6 секунд	256Mb
@@ -66,13 +77,27 @@ C# (MS .NET 5.0 + ASP)	1.6 секунд	400Mb
 Для каждого из участков выведите расстояние до ближайшего нуля. Числа выводите в одну строку, разделяя их пробелами.
 
 Пример 1
-Ввод	    Вывод
-5           0 1 2 1 0
+Ввод
+5
 0 1 4 9 0
 
+Вывод
+0 1 2 1 0
+
 Пример 2
-Ввод	        Вывод
-6               0 1 2 3 4 5
+Ввод
+6
 0 7 9 4 8 20
+
+Вывод
+0 1 2 3 4 5
+
+Входной файл
+20
+10 13 31 35 39 0 0 59 0 66 68 73 74 0 0 0 87 89 96 99
+
+Вывод
+5 4 3 2 1 0 0 1 0 1 2 2 1 0 0 0 1 2 3 4
+
 
  */
