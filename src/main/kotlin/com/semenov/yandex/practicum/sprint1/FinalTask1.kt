@@ -5,7 +5,7 @@ import kotlin.math.min
 
 
 fun main() {
-    readln().toInt()
+    readln()
     val homeNumbers = readln().split(" ").map { it.toInt() }
 
     val toNearestZero = toNearestZero(homeNumbers)
@@ -25,12 +25,12 @@ private fun toNearestZero(homeNumbers: List<Int>): List<Int> {
 
     var index = 0
     var leftZeroIndex = zeroIndexes[index]
-    var rightZeroIndex = zeroIndexes.getOrNull(++index) ?: leftZeroIndex
+    var rightZeroIndex = zeroIndexes.getOrElse(++index) { leftZeroIndex }
 
     for (i in homeNumbers.indices) {
         if (rightZeroIndex == i) {
             leftZeroIndex = rightZeroIndex
-            rightZeroIndex = zeroIndexes.getOrNull(++index) ?: leftZeroIndex
+            rightZeroIndex = zeroIndexes.getOrElse(++index) { leftZeroIndex }
         }
         if (homeNumbers[i] != 0) {
             result[i] = min(

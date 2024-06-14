@@ -3,16 +3,16 @@ package com.semenov.yandex.practicum.sprint1
 
 fun main() {
     val k = readln().toInt()
-    val matrix = StringBuilder()
 
-    for (i in 0 until STRING_NUMBERS) {
-        matrix.append(readln())
+    val matrix = buildString {
+        for (i in 0 until STRING_NUMBERS) {
+            append(readln())
+        }
     }
 
-    val scoring = scoring(k, matrix.toString())
+    val scoring = scoring(k, matrix)
     println(scoring)
 }
-
 
 private fun scoring(k: Int, values: String): Int {
     val ints = values.replace(".", "")
@@ -86,19 +86,25 @@ B. Ловкость рук
 2
 
 Пример 2
-Ввод	Вывод
-4       1
+Ввод
+4
 1111
 9999
 1111
 9911
 
+Вывод
+1
+
 Пример 3
-Ввод	Вывод
-4       0
+Ввод
+4
 1111
 1111
 1111
 1111
+
+Вывод
+0
 
  */
