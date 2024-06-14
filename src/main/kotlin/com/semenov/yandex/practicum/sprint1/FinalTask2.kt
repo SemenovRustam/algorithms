@@ -3,34 +3,32 @@ package com.semenov.yandex.practicum.sprint1
 
 fun main() {
     val k = readln().toInt()
-    val values = readln() + readln() + readln() + readln()
-    val scoring = scoring(k, values)
+    val matrix = StringBuilder()
+
+    for (i in 0 until STRING_NUMBERS) {
+        matrix.append(readln())
+    }
+
+    val scoring = scoring(k, matrix.toString())
     println(scoring)
 }
 
+
 private fun scoring(k: Int, values: String): Int {
     val ints = values.replace(".", "")
-    val map = mutableMapOf<Char, Int>()
-    var result = 0
-    val k2 = k * 2
+    val keys = k * NUMBER_OF_PLAYERS
 
-    ints.forEach {
-        var value = map[it]
-        if (value == null) {
-            map[it] = 1
-        } else {
-            map[it] = ++value
+    val buildMap = buildMap<Char, Int> {
+        ints.forEach {
+            this[it] = getOrPut(it) { 0 } + 1
         }
     }
 
-    for (value in map.values) {
-        if (value <= k2) {
-            result++
-        }
-    }
-
-    return result
+    return buildMap.values.count { it <= keys }
 }
+
+const val STRING_NUMBERS = 4
+const val NUMBER_OF_PLAYERS = 2
 
 /**
 B. Ловкость рук
@@ -77,12 +75,15 @@ B. Ловкость рук
 Выведите единственное число -— максимальное количество баллов, которое смогут набрать Гоша и Тимофей.
 
 Пример 1
-Ввод	Вывод
-3       2
+Ввод
+3
 1231
 2..2
 2..2
 2..2
+
+Вывод
+2
 
 Пример 2
 Ввод	Вывод
