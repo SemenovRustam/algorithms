@@ -13,7 +13,7 @@ fun main() {
     }
 }
 
-fun isBalanced(brackets: String): Boolean {
+private fun isBalanced(brackets: String): Boolean {
     val stack = Stack<Char>()
     val bracketsMap = mapOf('(' to ')', '{' to '}', '[' to ']')
 
