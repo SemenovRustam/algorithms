@@ -1,6 +1,6 @@
 package com.semenov.yandex.practicum.sprint2
 
-fun solution(head: Node1<String>?, item: String): Int {
+private fun solution(head: Node1<String>?, item: String): Int {
     var index = 0
     var current = head
 

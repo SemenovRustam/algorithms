@@ -1,7 +1,7 @@
 package com.semenov.yandex.practicum.sprint2
 
 
-fun solution(head: Node1<String>?, pos: Int): Node1<String>? {
+private fun solution(head: Node1<String>?, pos: Int): Node1<String>? {
     if (pos == 0) {
         return head?.next
     }

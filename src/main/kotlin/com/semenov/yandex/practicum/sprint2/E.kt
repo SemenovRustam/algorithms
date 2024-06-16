@@ -12,7 +12,7 @@ class Node<V>(var value: V) {
 //<template>
 
 
-fun solution(head: Node<String>?): Node<String>? {
+private fun solution(head: Node<String>?): Node<String>? {
     var current = head
     var prev = head?.prev
 

@@ -7,7 +7,7 @@ class Node1<V>(
 )
 // <template>
 
-fun solution(head: Node1<String>?) {
+private fun solution(head: Node1<String>?) {
     // Your code
     // ヽ(´▽`)/
     var current = head
