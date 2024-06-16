@@ -1,7 +1,7 @@
 package com.semenov.yandex.practicum.sprint2
 
 
-fun solution(head: Node<String>?, pos: Int): Node<String>? {
+fun solution(head: Node1<String>?, pos: Int): Node1<String>? {
     if (pos == 0) {
         return head?.next
     }
@@ -22,14 +22,14 @@ fun solution(head: Node<String>?, pos: Int): Node<String>? {
 
 
 fun main() {
-    val node3 = Node("node3", null)
-    val node2 = Node("node2", node3)
-    val node1 = Node("node1", node2)
-    val node0 = Node("node0", node1)
-    val newHead = solution(node0, 1)
-    assert(newHead === node0)
-    assert(newHead?.next === node2)
-    assert(newHead?.next?.next === node3)
+    val node13 = Node1("node3", null)
+    val node12 = Node1("node2", node13)
+    val node1 = Node1("node1", node12)
+    val node10 = Node1("node0", node1)
+    val newHead = solution(node10, 1)
+    assert(newHead === node10)
+    assert(newHead?.next === node12)
+    assert(newHead?.next?.next === node13)
     assert(newHead?.next?.next?.next == null)
     // result is : node0 -> node2 -> node3
 }

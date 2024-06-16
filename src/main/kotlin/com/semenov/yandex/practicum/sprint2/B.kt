@@ -1,13 +1,13 @@
 package com.semenov.yandex.practicum.sprint2
 
 // <template>
-class Node<V>(
+class Node1<V>(
     var value: V,
-    var next: Node<V>? = null,
+    var next: Node1<V>? = null,
 )
 // <template>
 
-fun solution(head: Node<String>?) {
+fun solution(head: Node1<String>?) {
     // Your code
     // ヽ(´▽`)/
     var current = head
@@ -18,11 +18,11 @@ fun solution(head: Node<String>?) {
 }
 
 fun main() {
-    val node3 = Node("node3")
-    val node2 = Node("node2", node3)
-    val node1 = Node("node1", node2)
-    val node0 = Node("node0", node1)
-    solution(node0)
+    val node13 = Node1("node3")
+    val node12 = Node1("node2", node13)
+    val node1 = Node1("node1", node12)
+    val node10 = Node1("node0", node1)
+    solution(node10)
     /*
     Output is:
     node0

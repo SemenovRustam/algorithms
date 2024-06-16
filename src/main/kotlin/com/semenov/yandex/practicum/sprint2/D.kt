@@ -1,6 +1,6 @@
 package com.semenov.yandex.practicum.sprint2
 
-fun solution(head: Node<String>?, item: String): Int {
+fun solution(head: Node1<String>?, item: String): Int {
     var index = 0
     var current = head
 
@@ -16,11 +16,11 @@ fun solution(head: Node<String>?, item: String): Int {
 }
 
 fun main() {
-    val node3 = Node("node3", null)
-    val node2 = Node("node2", node3)
-    val node1 = Node("node1", node2)
-    val node0 = Node("node0", node1)
-    val idx: Int = solution(node0, "node2")
+    val node13 = Node1("node3", null)
+    val node12 = Node1("node2", node13)
+    val node1 = Node1("node1", node12)
+    val node10 = Node1("node0", node1)
+    val idx: Int = solution(node10, "node2")
     assert(idx == 2)
 }
 
