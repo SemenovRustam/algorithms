@@ -1,65 +1,63 @@
 package com.semenov.yandex.practicum.sprint2
 
+
+
+
 import java.util.*
+import kotlin.math.floor
 
 fun main() {
-    val stack = Stack<String>()
-    val split = readln().split(" ")
+    val split = readln().split(" ").toMutableList()
 
-    for (index in split.lastIndex downTo 0) {
-        stack.push(split[index])
-    }
-
-    val result = calculate(stack)
+    val result = calculate(split)
     println(result)
 }
 
-private fun calculate(stack: Stack<String>) = buildString {
-    if (stack.size == 1) {
-        append(stack.pop())
-        return@buildString
-    }
-    if (stack.size == 2) {
-        append(stack.firstElement())
-        return@buildString
-    }
+private fun calculate(stringStack: MutableList<String>) = buildString {
+    val intStack = Stack<Int>()
 
-    while (stack.isNotEmpty()) {
-        var first = stack.pop().toInt()
-        var second = stack.pop().toInt()
-        lateinit var operator: String
+    for (index in stringStack.indices) {
+        val operator = stringStack[index]
 
-        val check = stack.peek().toIntOrNull()
-
-        if (check != null) {
-            val tempFirst = first
-            first = second
-            second = stack.pop().toInt()
-            operator = stack.pop()
-            stack.push(tempFirst.toString())
+        if (operator !in operators) {
+            intStack.push(operator.toInt())
         } else {
-            operator = stack.pop()
-        }
+            val second = intStack.pop()
+            val first = intStack.pop()
 
-        val result = when (operator) {
-            "+" -> first + second
-            "-" -> first - second
-            "*" -> first * second
-            else -> first / second
+            val result = when (operator) {
+                "+" -> first + second
+                "-" -> first - second
+                "*" -> first * second
+                else -> {
+                    floor(first.toFloat() / second.toFloat()) .toInt()
+                }
+            }
+            if (stringStack.isEmpty()) {
+                append(result)
+                break
+            }
+            intStack.push(result)
+
         }
-        if (stack.isEmpty()) {
-            append(result)
-            break
-        }
-        stack.push(result.toString())
+    }
+    if (intStack.isNotEmpty()) {
+        append(intStack.pop())
     }
 }
 
+val operators = listOf("/", "*", "-", "+")
+
 /**
+
+2 5 - 4 /
 4 13 5 / +
 
 2 1 + 3 *
 
 7 2 + 4 * 2 +
+
+4 13 5 / +
+6
 
  */
