@@ -1,5 +1,30 @@
 package com.semenov.yandex.practicum.sprint2
 
+/*
+https://contest.yandex.ru/contest/22781/run-report/115475842/
+
+Решение реализовано на массиве(кольцевой буффер)
+В решении используется два указателя:
+head - указатель, по которому нужно извлекать элемент из дека;
+tail - указатель, по которому нужно вставлять элемент в дек.
+
+При операции push_back(value) - проверяется текущий размер массива, и если массив заполнен - выводится ошибка,
+в ином случае значение указателя увеличивается на 1 и берется по модулю от максимального значения.
+
+При операции push_front(value) - проверяется текущий размер массива, и если она заполнена - выводится ошибка, в ином случае
+значение указателя уменьшается на 1 и прибавляется макс. размер массива для "кольцевого эффекта"
+
+При операции pop_front – проверяется текущий размер массива. Если массив пуст - выдается ошибка, в ином случае
+берется элемент из начала массива и уменьшается значение указателя.
+
+При операции pop_back - проверяется текущий размер массива, если пуст - выводится ошибка. Если массив не пуст, берется
+значение из конца массива, значение указателя уменьшается
+
+Временная сложность алгоритма O(n), тк зависит от кол-ва данных, подаваемых на вход. Добавление и извлечение из очереди
+О(1), поэтому на общую сложность не влияет.
+
+Пространственная сложность - 0(1), тк размер дека задается однажды и больше не изменяется.
+*/
 
 fun main() {
     val commandCount = readln().toInt()
@@ -23,22 +48,18 @@ fun main() {
             }
 
             PUSH_BACK -> {
-                try {
-                    deque.pushBack(input[1].toInt())
-                } catch (ex: Exception) {
+                if (!deque.pushBack(input[1].toInt())) {
                     printError()
                 }
             }
 
             PUSH_FRONT -> {
-                try {
-                    deque.pushFront(input[1].toInt())
-                } catch (ex: Exception) {
+                if (!deque.pushFront(input[1].toInt())) {
                     printError()
                 }
             }
 
-            else -> printError()
+            else -> error("unknown command")
         }
     }
 }
@@ -47,27 +68,31 @@ class Deque(private val capacity: Int) {
     private val deque = arrayOfNulls<Int>(capacity)
     private var head = 0
     private var tail = 0
+        private set(value) {
+            field = value % capacity
+        }
     private var size = 0
 
-    fun pushBack(value: Int) {
+    fun pushBack(value: Int) =
         if (size == capacity) {
-            throw RuntimeException()
+            false
         } else {
             deque[tail] = value
-            tail = (tail + 1) % capacity
+            ++tail
             ++size
+            true
         }
-    }
 
-    fun pushFront(value: Int) {
+    fun pushFront(value: Int) =
         if (size == capacity) {
-            throw RuntimeException()
+            false
         } else {
             head = (head - 1 + capacity) % capacity
             deque[head] = value
             ++size
+            true
         }
-    }
+
 
     fun popFront(): Int? {
         return if (size == 0) {
