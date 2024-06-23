@@ -1,8 +1,8 @@
 package com.semenov.yandex.practicum.sprint2
 
 
-import java.util.*
-import kotlin.math.floor
+import java.lang.Math.floorDiv
+import java.util.Stack
 
 fun main() {
     val stringsList = readln().split(" ")
@@ -15,36 +15,40 @@ private fun calculate(stringsList: List<String>) = buildString {
     val intStack = Stack<Int>()
 
     for (index in stringsList.indices) {
-        val operator = stringsList[index]
+        val value = stringsList[index]
+        val operator = Operator.fromValue(value)
 
-        if (operator !in operators) {
-            intStack.push(operator.toInt())
+        if (operator == null) {
+            intStack.push(value.toInt())
         } else {
             val second = intStack.pop()
             val first = intStack.pop()
 
             val result = when (operator) {
-                "+" -> first + second
-                "-" -> first - second
-                "*" -> first * second
-                else -> {
-                    floor(first.toFloat() / second.toFloat()).toInt()
-                }
-            }
-            if (stringsList.isEmpty()) {
-                append(result)
-                break
+                Operator.ADDITION -> first + second
+                Operator.SUBTRACTION -> first - second
+                Operator.MULTIPLY -> first * second
+                Operator.DIVISION -> floorDiv(first, second)
             }
             intStack.push(result)
-
         }
     }
-    if (intStack.isNotEmpty()) {
-        append(intStack.pop())
+    append(intStack.pop())
+}
+
+enum class Operator(val value: String) {
+    DIVISION("/"),
+    MULTIPLY("*"),
+    SUBTRACTION("-"),
+    ADDITION("+");
+
+
+    companion object {
+        private val map = values().associateBy { it.value }
+        fun fromValue(value: String): Operator? = map[value]
     }
 }
 
-val operators = listOf("/", "*", "-", "+")
 
 /**
 
@@ -118,6 +122,7 @@ B. Калькулятор
 
 Вывод
 9
+
 Пример 2
 Ввод
 7 2 + 4 * 2 +
