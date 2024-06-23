@@ -14,8 +14,7 @@ fun main() {
 private fun calculate(stringsList: List<String>) = buildString {
     val intStack = Stack<Int>()
 
-    for (index in stringsList.indices) {
-        val value = stringsList[index]
+    for (value in stringsList) {
         val operator = Operator.fromValue(value)
 
         if (operator == null) {
@@ -24,28 +23,27 @@ private fun calculate(stringsList: List<String>) = buildString {
             val second = intStack.pop()
             val first = intStack.pop()
 
-            val result = when (operator) {
-                Operator.ADDITION -> first + second
-                Operator.SUBTRACTION -> first - second
-                Operator.MULTIPLY -> first * second
-                Operator.DIVISION -> floorDiv(first, second)
-            }
+            val result = operator.action(first, second)
             intStack.push(result)
         }
     }
     append(intStack.pop())
 }
 
-enum class Operator(val value: String) {
-    DIVISION("/"),
-    MULTIPLY("*"),
-    SUBTRACTION("-"),
-    ADDITION("+");
+enum class Operator(
+    val value: String,
+    val action: (Int, Int) -> Int
+) {
+    DIVISION("/", { x, y -> floorDiv(x, y) }),
+    MULTIPLY("*", { x, y -> x * y }),
+    SUBTRACTION("-", { x, y -> x - y }),
+    ADDITION("+", { x, y -> x + y });
 
+    fun count(x: Int, y: Int) = action(x, y)
 
     companion object {
         private val map = values().associateBy { it.value }
-        fun fromValue(value: String): Operator? = map[value]
+        fun fromValue(value: String) = map[value]
     }
 }
 
