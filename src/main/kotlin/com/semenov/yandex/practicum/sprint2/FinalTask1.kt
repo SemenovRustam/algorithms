@@ -3,70 +3,99 @@ package com.semenov.yandex.practicum.sprint2
 
 fun main() {
     val commandCount = readln().toInt()
-    val deque = Deque(readln().toInt())
+    val capacity = readln().toInt()
+    val deque = Deque(capacity)
 
     repeat(commandCount) {
         val input = readln().split(" ")
+
         when (input[0]) {
-            POP_BACK -> deque.popBack()
-            POP_FRONT -> deque.popFront()
-            PUSH_BACK -> deque.pushBack(input[1].toInt())
-            PUSH_FRONT -> deque.pushFront(input[1].toInt())
+            POP_BACK -> {
+                deque.popBack()
+                    ?.let { println(it) }
+                    ?: printError()
+            }
+
+            POP_FRONT -> {
+                deque.popFront()
+                    ?.let { println(it) }
+                    ?: printError()
+            }
+
+            PUSH_BACK -> {
+                try {
+                    deque.pushBack(input[1].toInt())
+                } catch (ex: Exception) {
+                    printError()
+                }
+            }
+
+            PUSH_FRONT -> {
+                try {
+                    deque.pushFront(input[1].toInt())
+                } catch (ex: Exception) {
+                    printError()
+                }
+            }
+
+            else -> printError()
         }
     }
 }
 
 class Deque(private val capacity: Int) {
-    private val deque = Array<Int?>(capacity) { null }
+    private val deque = arrayOfNulls<Int>(capacity)
     private var head = 0
-    private var tail = capacity - 1
+    private var tail = 0
     private var size = 0
 
     fun pushBack(value: Int) {
         if (size == capacity) {
-            printError()
+            throw RuntimeException()
         } else {
-            tail = (tail + 1) % capacity
             deque[tail] = value
-            size++
+            tail = (tail + 1) % capacity
+            ++size
         }
     }
 
     fun pushFront(value: Int) {
         if (size == capacity) {
-            printError()
+            throw RuntimeException()
         } else {
-            head = (head - 1) % capacity
+            head = (head - 1 + capacity) % capacity
             deque[head] = value
-            size++
+            ++size
         }
     }
 
-    fun popFront() {
-        if (size == 0) {
-            printError()
+    fun popFront(): Int? {
+        return if (size == 0) {
+            null
         } else {
-            println(deque[head])
+            val value = deque[head]
             deque[head] = null
             head = (head + 1) % capacity
-            size--
+            --size
+            value
         }
     }
 
-    fun popBack() {
-        if (size == 0) {
-            printError()
+    fun popBack(): Int? {
+        return if (size == 0) {
+            null
         } else {
-            println(deque[tail])
+            tail = (tail - 1 + capacity) % capacity
+            val value = deque[tail]
             deque[tail] = null
-            tail = (tail - 1) % capacity
-            size--
+            --size
+            return value
         }
     }
+}
 
-    private fun printError() {
-        println(ERROR)
-    }
+private fun printError() {
+    println(ERROR)
 }
 
 private const val ERROR = "error"
