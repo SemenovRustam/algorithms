@@ -11,7 +11,7 @@ fun main() {
     println(result)
 }
 
-private fun calculate(stringsList: List<String>) = buildString {
+private fun calculate(stringsList: List<String>) : Int {
     val intStack = Stack<Int>()
 
     for (value in stringsList) {
@@ -27,7 +27,7 @@ private fun calculate(stringsList: List<String>) = buildString {
             intStack.push(result)
         }
     }
-    append(intStack.pop())
+    return intStack.pop()
 }
 
 enum class Operator(

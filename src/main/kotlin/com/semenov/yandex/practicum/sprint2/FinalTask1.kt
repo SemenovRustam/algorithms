@@ -1,7 +1,7 @@
 package com.semenov.yandex.practicum.sprint2
 
 /*
-https://contest.yandex.ru/contest/22781/run-report/115475842/
+https://contest.yandex.ru/contest/22781/run-report/115478267/
 
 Решение реализовано на массиве(кольцевой буффер)
 В решении используется два указателя:
@@ -67,10 +67,16 @@ fun main() {
 class Deque(private val capacity: Int) {
     private val deque = arrayOfNulls<Int>(capacity)
     private var head = 0
+        private set(value) {
+            field = (value + capacity) % capacity
+        }
+
     private var tail = 0
         private set(value) {
-            field = value % capacity
+            field = (value + capacity) % capacity
         }
+
+
     private var size = 0
 
     fun pushBack(value: Int) =
@@ -87,7 +93,7 @@ class Deque(private val capacity: Int) {
         if (size == capacity) {
             false
         } else {
-            head = (head - 1 + capacity) % capacity
+            --head
             deque[head] = value
             ++size
             true
@@ -100,7 +106,7 @@ class Deque(private val capacity: Int) {
         } else {
             val value = deque[head]
             deque[head] = null
-            head = (head + 1) % capacity
+            ++head
             --size
             value
         }
@@ -110,7 +116,7 @@ class Deque(private val capacity: Int) {
         return if (size == 0) {
             null
         } else {
-            tail = (tail - 1 + capacity) % capacity
+            --tail
             val value = deque[tail]
             deque[tail] = null
             --size
