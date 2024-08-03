@@ -6,25 +6,25 @@ fun main() {
 
     val result = checkSubsequence(s, t)
 
-    if (s == result) {
+    if (result) {
         println("True")
     } else {
         println("False")
     }
 }
 
-private fun checkSubsequence(sub: String, t: String) = buildString {
+private fun checkSubsequence(sub: String, t: String): Boolean {
     var subIndex = 0
     for (index in t.indices) {
-        if (sub[subIndex] == t[index]) {
+        if (subIndex < sub.length && sub[subIndex] == t[index]) {
             subIndex++
-            append(t[index])
-
-            if (subIndex == sub.length) {
-                break
-            }
+        }
+        // Ранняя остановка
+        if (subIndex == sub.length) {
+            return true
         }
     }
+    return subIndex == sub.length
 }
 
 /**
