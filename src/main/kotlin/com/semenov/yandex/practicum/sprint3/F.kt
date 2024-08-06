@@ -7,7 +7,7 @@ fun main() {
     println(getPerimeter(lengths))
 }
 
-fun getPerimeter(lengths: List<Int>): Int {
+private fun getPerimeter(lengths: List<Int>): Int {
     val descendingLengths = lengths.sortedDescending()
 
     for (index in 0 until descendingLengths.size - 2) {

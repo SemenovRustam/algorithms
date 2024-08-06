@@ -11,7 +11,7 @@ fun main() {
     println(happyChildrens)
 }
 
-fun getHappyChildrens(childrens: Int, greedFactor: List<Int>, cookies: Int, cookiesSize: List<Int>): Int {
+private fun getHappyChildrens(childrens: Int, greedFactor: List<Int>, cookies: Int, cookiesSize: List<Int>): Int {
     var happyCount = 0
     val sortedGreedFactor = greedFactor.sorted()
     val sortedCookies = cookiesSize.sorted()

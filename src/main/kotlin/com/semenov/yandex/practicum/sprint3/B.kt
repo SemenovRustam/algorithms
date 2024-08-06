@@ -7,7 +7,7 @@ fun main() {
     println(result)
 }
 
-fun getCombinations(digits: String) = buildList {
+private fun getCombinations(digits: String) = buildList {
     if (digits.isEmpty()) return@buildList
 
     fun backtrack(combination: StringBuilder, nextIndex: Int) {
@@ -30,7 +30,7 @@ fun getCombinations(digits: String) = buildList {
     backtrack(StringBuilder(), 0)
 }
 
-val phoneMap = mapOf(
+private val phoneMap = mapOf(
     '2' to "abc",
     '3' to "def",
     '4' to "ghi",
