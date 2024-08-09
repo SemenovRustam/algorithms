@@ -9,12 +9,13 @@ fun main() {
 }
 
 fun getMaxBlockCount(numbers: List<Int>): Int {
-    var maxSoFar = 0
     var count = 0
+    var max = 0
 
-    for (i in numbers.indices) {
-        maxSoFar = maxOf(maxSoFar, numbers[i])
-        if (maxSoFar == i) {
+    for (index in numbers.indices) {
+        max = maxOf(max, numbers[index])
+
+        if (max == index) {
             count++
         }
     }
