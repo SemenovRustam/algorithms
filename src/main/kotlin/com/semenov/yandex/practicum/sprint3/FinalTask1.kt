@@ -19,14 +19,12 @@ fun brokenSearch(arr: IntArray, target: Int): Int {
         if (arr[mid] == target) return mid
 
         if (arr[left] <= arr[mid]) {
-            // Левая половина отсортирована
             if (target >= arr[left] && target < arr[mid]) {
                 right = mid - 1
             } else {
                 left = mid + 1
             }
         } else {
-            // Правая половина отсортирована
             if (target > arr[mid] && target <= arr[right]) {
                 left = mid + 1
             } else {
@@ -35,7 +33,7 @@ fun brokenSearch(arr: IntArray, target: Int): Int {
         }
     }
 
-    return -1;
+    return -1
 }
 
 /**
