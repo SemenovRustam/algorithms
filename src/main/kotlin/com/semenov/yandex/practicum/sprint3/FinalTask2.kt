@@ -18,7 +18,7 @@ fun main() {
     quicksort(members, 0, members.size - 1)
 
     members.forEach {
-        println(it)
+        println(it.name)
     }
 }
 
@@ -36,14 +36,11 @@ fun partition(arr: Array<Member>, low: Int, high: Int): Int {
     var i = low - 1
 
     for (j in low until high) {
-        if (arr[j].solvedTask > solvedTaskPivot) {
+        val member = arr[j]
+        if (member.solvedTask > solvedTaskPivot ||
+            (member.solvedTask == solvedTaskPivot && member.fine <= finePivot)) {
             i++
             swap(arr, i, j)
-        } else if (arr[j].solvedTask == solvedTaskPivot) {
-            if (arr[j].fine <= finePivot) {
-                i++
-                swap(arr, i, j)
-            }
         }
     }
     swap(arr, i + 1, high)
@@ -60,11 +57,7 @@ data class Member(
     val name: String,
     val solvedTask: Int,
     val fine: Int
-) {
-    override fun toString(): String {
-        return "$name $solvedTask $fine"
-    }
-}
+)
 
 /**
 5
@@ -73,4 +66,29 @@ gena 6 1000
 gosha 2 90
 rita 2 90
 timofey 4 80
+
+Вывод:
+
+gena
+timofey
+alla
+gosha
+rita
+
+
+5
+alla 0 0
+gena 0 0
+gosha 0 0
+rita 0 0
+timofey 0 0
+
+Вывод:
+
+alla
+gena
+gosha
+rita
+timofey
+
  */
