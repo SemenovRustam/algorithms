@@ -17,8 +17,8 @@ fun partition(arr: IntArray, low: Int, high: Int): Int {
             i++
             swap(arr, i, j)
         }
-        swap(arr, i + 1, high)
     }
+    swap(arr, i + 1, high)
     return i + 1
 }
 
@@ -26,7 +26,6 @@ fun swap(arr: IntArray, i: Int, j: Int) {
     val temp = arr[i]
     arr[i] = arr[j]
     arr[j] = temp
-
 }
 
 
