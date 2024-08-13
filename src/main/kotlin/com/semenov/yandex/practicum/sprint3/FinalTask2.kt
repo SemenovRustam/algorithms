@@ -5,13 +5,12 @@ fun main() {
     val members = buildList {
         for (index in 0 until count) {
             val info = readln().split(" ")
-            add(
-                Member(
-                    name = info[0],
-                    solvedTask = info[1].toInt(),
-                    fine = info[2].toInt()
-                )
+            val member = Member(
+                name = info[0],
+                solvedTask = info[1].toInt(),
+                fine = info[2].toInt()
             )
+            add(member)
         }
     }.toTypedArray()
 
@@ -37,11 +36,14 @@ fun partition(arr: Array<Member>, low: Int, high: Int): Int {
 
     for (j in low until high) {
         val member = arr[j]
+
         if (member.solvedTask > solvedTaskPivot ||
-            (member.solvedTask == solvedTaskPivot && member.fine <= finePivot)) {
+            (member.solvedTask == solvedTaskPivot && (member.fine < finePivot || (member.fine == finePivot && member.name <= arr[high].name)))
+        ) {
             i++
             swap(arr, i, j)
         }
+
     }
     swap(arr, i + 1, high)
     return i + 1
