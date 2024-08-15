@@ -1,5 +1,7 @@
 package com.semenov.yandex.practicum.sprint3
 
+import kotlin.random.Random
+
 /**
 https://contest.yandex.ru/contest/23815/run-report/116822521/
 
@@ -7,6 +9,16 @@ https://contest.yandex.ru/contest/23815/run-report/116822521/
 
 Функция quicksort рекурсивно сортирует массив участников.
 Массив делится на две части, используя функцию partition, и затем сортирует каждую часть отдельно.
+
+Функция partition:
+Выбирается первый опорный элемент - решенный задачи, второй - кол-во штрафа.
+Указатель I инициализируем как - 1, за пределами массива. В цикле проходимся и находим участников, больше  опорного
+по решенным задачам, если же задачи равны, то меньшим по штрафу, если эти два значения равны проверяется лексикографическое значение по имени.
+
+Если участник соответствует данному условие, то индекс I увеличиваем на 1.
+Этот индекс показывает на неотсортированного участника по условию задачи.
+Происходит замена участника с индексом I и индексом J.
+
 Функция partition выбирает опорный элемент (pivot) и перемещает элементы так, чтобы все элементы,
 которые больше опорного, оказались справа от него, а все элементы, которые меньше или равны опорному,
 оказались слева.
@@ -14,6 +26,14 @@ https://contest.yandex.ru/contest/23815/run-report/116822521/
 Участники сортируются в порядке убывания по решенным задачам.
 Если кол-во задач одинаково, сортируется по кол-ву штрафа в порядке возрастания.
 Если решенные задачи и кол-во штрафов одинаково, то участники сортируются по имени.
+
+Доказательство корректности:
+
+В начале каждого рекурсивного вызова quicksort массив делится на две группы: меньшие и большие или равные опорному элементу.
+Если массив содержит 0 или 1 элемент, он считается отсортированным.
+Если массив содержит более одного элемента, выполняется рекурсивный вызов quicksort для каждой группы.
+Поскольку каждая группа меньше исходного массива, можем предположить, что каждая группа будет отсортирована после рекурсивного вызова.
+Когда рекурсия завершается, массив будет отсортированные.
 
 Средняя временная сложность O(n log n) достигается благодаря тому,
 что алгоритм делит массив на две примерно равные части на каждой итерации.
@@ -25,60 +45,61 @@ https://contest.yandex.ru/contest/23815/run-report/116822521/
 Средний случай: O(log n)
 Худший случай: O(n)
  */
+
 fun main() {
     val count = readln().toInt()
-    val members = buildList {
-        for (index in 0 until count) {
-            val info = readln().split(" ")
-            val member = Member(
-                name = info[0],
-                solvedTask = info[1].toInt(),
-                fine = info[2].toInt()
-            )
-            add(member)
-        }
-    }.toTypedArray()
+    val members = Array(count) { Member("", 0, 0) }
 
-    quicksort(members, 0, members.size - 1)
+    for (index in 0 until count) {
+        val (name, solvedTask, fine) = readln().split(" ")
+        val member = Member(
+            name = name,
+            solvedTask = solvedTask.toInt(),
+            fine = fine.toInt()
+        )
+        members[index] = member
+    }
+
+    members.quicksort(0, members.lastIndex)
 
     members.forEach {
         println(it.name)
     }
 }
 
-fun quicksort(arr: Array<Member>, low: Int, high: Int) {
+private fun Array<Member>.quicksort(low: Int, high: Int) {
     if (low < high) {
-        val pivotIndex = partition(arr, low, high)
-        quicksort(arr, low, pivotIndex - 1)
-        quicksort(arr, pivotIndex + 1, high)
+        val pivotIndex = this.partition(low, high)
+        quicksort(low, pivotIndex - 1)
+        quicksort(pivotIndex + 1, high)
     }
 }
 
-fun partition(arr: Array<Member>, low: Int, high: Int): Int {
-    val solvedTaskPivot = arr[high].solvedTask
-    val finePivot = arr[high].fine
-    var i = low - 1
+private fun Array<Member>.partition(low: Int, high: Int): Int {
+    val solvedTaskPivot = this[Random.nextInt(low, high)].solvedTask
+    val finePivot = this[Random.nextInt(low, high)].fine
+    var indexForSwap = low - 1
 
     for (j in low until high) {
-        val member = arr[j]
+        val member = this[j]
 
         if (member.solvedTask > solvedTaskPivot ||
             (member.solvedTask == solvedTaskPivot &&
                     (member.fine < finePivot || (member.fine == finePivot && member.name <= arr[high].name)))
         ) {
-            i++
-            swap(arr, i, j)
+            indexForSwap++
+            swap(indexForSwap, j)
         }
 
     }
-    swap(arr, i + 1, high)
-    return i + 1
+    swap(indexForSwap + 1, high)
+    return indexForSwap + 1
 }
 
-fun swap(arr: Array<Member>, i: Int, j: Int) {
-    val temp = arr[i]
-    arr[i] = arr[j]
-    arr[j] = temp
+private fun Array<Member>.swap(i: Int, j: Int) {
+    val temp = this[i]
+    this[i] = this[j]
+    this[j] = temp
 }
 
 data class Member(
