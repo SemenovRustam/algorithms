@@ -1,5 +1,7 @@
 package com.semenov.yandex.practicum.sprint3
 
+import java.util.*
+
 /**
 https://contest.yandex.ru/contest/23815/run-report/116877348/
 
@@ -38,9 +40,11 @@ https://contest.yandex.ru/contest/23815/run-report/116877348/
  */
 
 fun main() {
-    readln()
+    val arrSize = readln().toInt()
     val k = readln().toInt()
-    val array = readln().split(" ").map { it.toInt() }.toIntArray()
+    val arrTokens = StringTokenizer(readln())
+
+    val array = IntArray(arrSize) { arrTokens.nextToken().toInt() }
 
     println(brokenSearch(array, k))
 }
