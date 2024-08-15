@@ -1,9 +1,7 @@
 package com.semenov.yandex.practicum.sprint3
 
-import kotlin.random.Random
-
 /**
-https://contest.yandex.ru/contest/23815/run-report/116822521/
+https://contest.yandex.ru/contest/23815/run-report/116882692/
 
 В данном алгоритме используется способ быстрой сортировки
 
@@ -62,9 +60,8 @@ fun main() {
 
     members.quicksort(0, members.lastIndex)
 
-    members.forEach {
-        println(it.name)
-    }
+    val result = members.map(Member::name).joinToString("\n")
+    println(result)
 }
 
 private fun Array<Member>.quicksort(low: Int, high: Int) {
@@ -76,17 +73,13 @@ private fun Array<Member>.quicksort(low: Int, high: Int) {
 }
 
 private fun Array<Member>.partition(low: Int, high: Int): Int {
-    val solvedTaskPivot = this[Random.nextInt(low, high)].solvedTask
-    val finePivot = this[Random.nextInt(low, high)].fine
+    val pivot = this[high]
+
     var indexForSwap = low - 1
 
     for (j in low until high) {
         val member = this[j]
-
-        if (member.solvedTask > solvedTaskPivot ||
-            (member.solvedTask == solvedTaskPivot &&
-                    (member.fine < finePivot || (member.fine == finePivot && member.name <= arr[high].name)))
-        ) {
+        if (memberComparator.compare(member, pivot) <= 0) {
             indexForSwap++
             swap(indexForSwap, j)
         }
@@ -95,6 +88,22 @@ private fun Array<Member>.partition(low: Int, high: Int): Int {
     swap(indexForSwap + 1, high)
     return indexForSwap + 1
 }
+
+val memberComparator: Comparator<Member> = Comparator { member1, pivotMember ->
+    when {
+        member1.solvedTask > pivotMember.solvedTask -> -1
+        member1.solvedTask < pivotMember.solvedTask -> 1
+        member1.solvedTask == pivotMember.solvedTask -> {
+            when {
+                member1.fine < pivotMember.fine -> -1
+                member1.fine > pivotMember.fine -> 1
+                else -> member1.name.compareTo(pivotMember.name)
+            }
+        }
+        else -> 0
+    }
+}
+
 
 private fun Array<Member>.swap(i: Int, j: Int) {
     val temp = this[i]
