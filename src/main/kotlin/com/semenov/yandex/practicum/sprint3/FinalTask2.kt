@@ -1,7 +1,7 @@
 package com.semenov.yandex.practicum.sprint3
 
 /**
-https://contest.yandex.ru/contest/23815/run-report/116882692/
+https://contest.yandex.ru/contest/23815/run-report/116893291/
 
 В данном алгоритме используется способ быстрой сортировки
 
@@ -56,21 +56,25 @@ fun main() {
         )
     }
 
-    members.quicksort(0, members.lastIndex)
+    val memberComparator: Comparator<Member> = compareByDescending<Member> { it.solvedTask }
+        .thenBy { it.fine }
+        .thenBy { it.name }
+
+    members.quicksort(0, members.lastIndex, memberComparator)
 
     val result = members.joinToString("\n") { it.name }
     println(result)
 }
 
-private fun Array<Member>.quicksort(low: Int, high: Int) {
+private fun <T> Array<T>.quicksort(low: Int, high: Int, comparator: Comparator<T>) {
     if (low < high) {
-        val pivotIndex = this.partition(low, high)
-        quicksort(low, pivotIndex - 1)
-        quicksort(pivotIndex + 1, high)
+        val pivotIndex = this.partition(low, high, comparator)
+        quicksort(low, pivotIndex - 1, comparator)
+        quicksort(pivotIndex + 1, high, comparator)
     }
 }
 
-private fun Array<Member>.partition(low: Int, high: Int): Int {
+private fun <T> Array<T>.partition(low: Int, high: Int, comparator: Comparator<T>): Int {
     val random = (low..high).random()
     swap(random, high)
     val pivot = this[high]
@@ -79,21 +83,16 @@ private fun Array<Member>.partition(low: Int, high: Int): Int {
 
     for (j in low until high) {
         val member = this[j]
-        if (memberComparator.compare(member, pivot) <= 0) {
+        if (comparator.compare(member, pivot) <= 0) {
             indexForSwap++
             swap(indexForSwap, j)
         }
-
     }
     swap(indexForSwap + 1, high)
     return indexForSwap + 1
 }
 
-val memberComparator: Comparator<Member> = compareByDescending<Member> { it.solvedTask }
-    .thenBy { it.fine }
-    .thenBy { it.name }
-
-private fun Array<Member>.swap(i: Int, j: Int) {
+private fun <T> Array<T>.swap(i: Int, j: Int) {
     val temp = this[i]
     this[i] = this[j]
     this[j] = temp
