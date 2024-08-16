@@ -58,8 +58,7 @@ fun brokenSearch(arr: IntArray, target: Int): Int {
         if (arr[mid] == target) return mid
 
         if (arr[left] <= arr[mid]) {
-            val range = arr[left]..arr[mid]
-            if (target in range) {
+            if (target in arr[left]..arr[mid]) {
                 right = mid - 1
             } else {
                 left = mid + 1

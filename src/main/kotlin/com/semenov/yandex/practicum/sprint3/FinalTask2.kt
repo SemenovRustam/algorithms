@@ -46,21 +46,19 @@ https://contest.yandex.ru/contest/23815/run-report/116882692/
 
 fun main() {
     val count = readln().toInt()
-    val members = Array(count) { Member("", 0, 0) }
 
-    for (index in 0 until count) {
+    val members = Array(count) {
         val (name, solvedTask, fine) = readln().split(" ")
-        val member = Member(
+        Member(
             name = name,
             solvedTask = solvedTask.toInt(),
             fine = fine.toInt()
         )
-        members[index] = member
     }
 
     members.quicksort(0, members.lastIndex)
 
-    val result = members.map(Member::name).joinToString("\n")
+    val result = members.joinToString("\n") { it.name }
     println(result)
 }
 
@@ -73,6 +71,8 @@ private fun Array<Member>.quicksort(low: Int, high: Int) {
 }
 
 private fun Array<Member>.partition(low: Int, high: Int): Int {
+    val random = (low..high).random()
+    swap(random, high)
     val pivot = this[high]
 
     var indexForSwap = low - 1
@@ -89,21 +89,9 @@ private fun Array<Member>.partition(low: Int, high: Int): Int {
     return indexForSwap + 1
 }
 
-val memberComparator: Comparator<Member> = Comparator { member1, pivotMember ->
-    when {
-        member1.solvedTask > pivotMember.solvedTask -> -1
-        member1.solvedTask < pivotMember.solvedTask -> 1
-        member1.solvedTask == pivotMember.solvedTask -> {
-            when {
-                member1.fine < pivotMember.fine -> -1
-                member1.fine > pivotMember.fine -> 1
-                else -> member1.name.compareTo(pivotMember.name)
-            }
-        }
-        else -> 0
-    }
-}
-
+val memberComparator: Comparator<Member> = compareByDescending<Member> { it.solvedTask }
+    .thenBy { it.fine }
+    .thenBy { it.name }
 
 private fun Array<Member>.swap(i: Int, j: Int) {
     val temp = this[i]
