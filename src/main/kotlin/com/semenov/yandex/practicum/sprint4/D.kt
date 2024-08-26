@@ -8,7 +8,7 @@ fun main() {
     println(polynomialHash(base, module, string))
 }
 
-fun polynomialHash(q: Long, module: Long, s: String): Long {
+private fun polynomialHash(q: Long, module: Long, s: String): Long {
     var hashValue = 0L
     var currentPower = 1L // q^0 = 1
     val n = s.length
