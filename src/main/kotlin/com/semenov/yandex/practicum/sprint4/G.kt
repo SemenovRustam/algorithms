@@ -23,22 +23,32 @@ fun main() {
 }
 
 
-fun getDuplex(A: Int, ints: IntArray): Set<List<Int>> {
-    val history = mutableSetOf<Int>()
+fun getDuplex(target: Int, ints: IntArray): Set<List<Int>> {
+    val sumInfo = mutableMapOf<Int, Index>()
     ints.sort()
     val duplex = mutableSetOf<List<Int>>()
 
     for (i in ints.indices) {
         for (j in (i + 1) until ints.size) {
-            for (k in (j + 1) until ints.size) {
-                val target = A - ints[i] - ints[j] - ints[k]
-                if (target in history) {
-                    duplex.add(listOf(target, ints[i], ints[j], ints[k]))
-                }
+            val localTarget = target - ints[i] - ints[j]
+            sumInfo[localTarget]?.also {
+                duplex.add(listOf(ints[it.i], ints[it.j], ints[i], ints[j]).sorted())
             }
+            sumInfo[ints[i] + ints[j]] = Index(i, j)
         }
-        history.add(ints[i])
     }
 
     return duplex
 }
+
+//data class SumInfo(val i: Int, val j: Int, val sum: Int)
+
+data class Index(val i: Int, val j: Int)
+
+/**
+ *
+8
+10
+2 3 2 4 1 10 3 0
+ *
+ * */
