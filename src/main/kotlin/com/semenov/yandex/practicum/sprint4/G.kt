@@ -11,10 +11,18 @@ fun main() {
 
     val target = readln().toInt()
     val tokenizer = StringTokenizer(readln())
-    val ints = IntArray(count) { tokenizer.nextToken().toInt() }
+    val ints = LongArray(count) { tokenizer.nextToken().toLong() }
 
     val duplex = getDuplex(target, ints)
-        .sortedBy { it.first() }
+        .sortedWith(Comparator { list1, list2 ->
+            for (i in list1.indices) {
+                if (i >= list2.size) return@Comparator 1
+                val cmp = list1[i].compareTo(list2[i])
+                if (cmp != 0) return@Comparator cmp
+            }
+            list1.size.compareTo(list2.size)
+        })
+
 
     println(duplex.size)
     for (list in duplex) {
@@ -23,28 +31,29 @@ fun main() {
 }
 
 
-fun getDuplex(target: Int, ints: IntArray): Set<List<Int>> {
-    val sumInfo = mutableMapOf<Int, List<Int>>()
-    val duplex = mutableSetOf<List<Int>>()
+fun getDuplex(target: Int, nums: LongArray): Set<List<Long>> {
+    val sumInfo = mutableMapOf<Long, MutableList<Pair<Int, Int>>>()
+    val duplex = mutableSetOf<List<Long>>()
 
-    for (i in ints.indices) {
-        for (j in (i + 1) until ints.size) {
-            val localTarget = target - ints[i] - ints[j]
-            if (localTarget in sumInfo.keys) {
-                val (first, second) = sumInfo[localTarget]!!
-                if (first != i && second != j) {
-                    duplex.add(
-                        listOf(ints[first], ints[second], ints[i], ints[j]).sorted()
-                    )
+    for (i in nums.indices) {
+        for (j in (i + 1) until nums.size) {
+            val localTarget = target - nums[i] - nums[j]
+            if (sumInfo.containsKey(localTarget)) {
+                val pairs = sumInfo[localTarget]!!
+                for ((first, second) in pairs) {
+                    if (first != i && first != j && second != i && second != j) {
+                        duplex.add(
+                            listOf(nums[first], nums[second], nums[i], nums[j]).sorted()
+                        )
+                    }
                 }
             }
-            sumInfo[ints[i] + ints[j]] = listOf(i, j)
+            sumInfo.computeIfAbsent(nums[i] + nums[j]) { mutableListOf() }.add(Pair(i, j))
         }
     }
 
     return duplex
 }
-
 
 /**
  *
