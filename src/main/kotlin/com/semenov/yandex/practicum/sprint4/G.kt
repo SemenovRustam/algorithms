@@ -1,6 +1,6 @@
 package com.semenov.yandex.practicum.sprint4
 
-import java.util.StringTokenizer
+import java.util.*
 
 fun main() {
     val count = readln().toInt()
@@ -24,26 +24,27 @@ fun main() {
 
 
 fun getDuplex(target: Int, ints: IntArray): Set<List<Int>> {
-    val sumInfo = mutableMapOf<Int, Index>()
-    ints.sort()
+    val sumInfo = mutableMapOf<Int, List<Int>>()
     val duplex = mutableSetOf<List<Int>>()
 
     for (i in ints.indices) {
         for (j in (i + 1) until ints.size) {
             val localTarget = target - ints[i] - ints[j]
-            sumInfo[localTarget]?.also {
-                duplex.add(listOf(ints[it.i], ints[it.j], ints[i], ints[j]).sorted())
+            if (localTarget in sumInfo.keys) {
+                val (first, second) = sumInfo[localTarget]!!
+                if (first != i && second != j) {
+                    duplex.add(
+                        listOf(ints[first], ints[second], ints[i], ints[j]).sorted()
+                    )
+                }
             }
-            sumInfo[ints[i] + ints[j]] = Index(i, j)
+            sumInfo[ints[i] + ints[j]] = listOf(i, j)
         }
     }
 
     return duplex
 }
 
-//data class SumInfo(val i: Int, val j: Int, val sum: Int)
-
-data class Index(val i: Int, val j: Int)
 
 /**
  *
