@@ -1,7 +1,6 @@
 package com.semenov.yandex.practicum.sprint4
 
 import java.util.*
-import kotlin.math.max
 
 fun main() {
     val count = readln().toInt()
