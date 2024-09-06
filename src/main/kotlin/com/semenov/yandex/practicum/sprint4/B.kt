@@ -11,26 +11,26 @@ fun main() {
     println(maxRounds)
 }
 
-fun getMaxRounds(array: IntArray): Int {
+private fun getMaxRounds(array: IntArray): Int {
     val ints = array.map { if (it == 0) 1 else -1 }
 
     val prefixSumIndex = mutableMapOf(0 to -1)
     var currentPrefixSum = 0
-    var maxLenght = 0
+    var maxLength = 0
 
     for (index in ints.indices) {
         currentPrefixSum += ints[index]
 
         if (prefixSumIndex.containsKey(currentPrefixSum)) {
             val length = index - prefixSumIndex[currentPrefixSum]!!
-            if (length > maxLenght) {
-                maxLenght = length
+            if (length > maxLength) {
+                maxLength = length
             }
         } else {
             prefixSumIndex[currentPrefixSum] = index
         }
     }
-    return maxLenght
+    return maxLength
 }
 
 /**
