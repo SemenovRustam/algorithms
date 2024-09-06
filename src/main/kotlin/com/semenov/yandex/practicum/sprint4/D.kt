@@ -8,7 +8,7 @@ fun main() {
     println(polynomialHash(base, module, string))
 }
 
-private fun polynomialHash(q: Long, module: Long, s: String): Long {
+private fun polynomialHash(base: Long, module: Long, s: String): Long {
     var hashValue = 0L
     var currentPower = 1L // q^0 = 1
     val n = s.length
@@ -22,7 +22,7 @@ private fun polynomialHash(q: Long, module: Long, s: String): Long {
         if (hashValue < 0) {
             hashValue += module
         }
-        currentPower = (currentPower * q) % module
+        currentPower = (currentPower * base) % module
         // Убедитесь, что currentPower всегда положительный
         if (currentPower < 0) {
             currentPower += module
