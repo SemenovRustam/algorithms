@@ -17,15 +17,23 @@ fun main() {
     }
 }
 
-fun getIndex(string: String, length: Int) = buildMap<Long, MutableList<Int>> {
-    for (i in string.indices) {
-        if (i + length <= string.length - 1) {
-            val hash = string.substring(i, i + length).hashCode().toLong()
-            computeIfAbsent(hash) { mutableListOf() }.add(i)
-        }
+fun getIndex(string: String, n: Int) = buildMap<String, MutableList<Int>> {
+    for (i in 0 until string.length - n) {
+        computeIfAbsent(string.substring(i, i + n)) { mutableListOf() }.add(i)
     }
 }
 
+
+
+/**
+
+10 2
+gggggooooogggggoooooogggggssshaa
+
+3 4
+allallallallalla
+
+ */
 
 
 
