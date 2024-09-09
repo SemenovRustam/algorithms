@@ -4,12 +4,11 @@ fun main() {
     findCollision()
 }
 
-// Параметры хеш-функции
-const val q = 1000L
-const val R = 123987123L
 
 // Функция для вычисления хеша строки
 fun hashString(s: String): Long {
+    val q = 1000L
+    val R = 123987123L
     var h = 0L
     var power = 1L
     for (char in s.reversed()) {
