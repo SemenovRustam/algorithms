@@ -2,72 +2,53 @@ package com.semenov.yandex.practicum.sprint4
 
 fun main() {
     val documentCount = readln().toInt()
-    var count = 1
-    val documents = buildList {
-        repeat(documentCount) {
-            add(
-                Document(
-                    dictionary = readln().split(" ")
-                        .groupingBy { it.lowercase() }
-                        .eachCount(),
-                    number = count++
-                )
-            )
-        }
-    }
+    val wordToDocFrequency = createWordIndex(documentCount)
 
     val requestCount = readln().toInt()
-
-    val requests = buildList {
-        repeat(requestCount) {
-            add(
-                Request(
-                    words = buildSet {
-                        readln().split(" ").forEach { string ->
-                            add(string)
-                        }
-                    }
-                )
-            )
-        }
-    }
-
-    val comparator = compareByDescending<Map.Entry<Int, Int>> { it.value }
-        .thenBy { it.key }
-
-    for (request in requests) {
-        val sortedEntries = getRelevantRequest(documents, request)
-            .entries.sortedWith(comparator)
-            .map { it.key }
-            .take(5)
-
-        println(sortedEntries.joinToString(" "))
+    repeat(requestCount) {
+        val documentScores = handleRequest(wordToDocFrequency)
+        val sortedDocuments = getSortedDoc(documentScores)
+        println(sortedDocuments.joinToString(" "))
     }
 }
 
-private fun getRelevantRequest(documents: List<Document>, request: Request): Map<Int, Int> {
-    val result = buildMap<Int, Int> {
-        for (word in request.words) {
-            for (doc in documents) {
-                if (word in doc.dictionary) {
-                    this[doc.number] = getOrPut(doc.number) { 0 } + doc.dictionary[word]!!
-                }
-            }
+private fun createWordIndex(documentCount: Int): MutableMap<String, MutableMap<Int, Int>> {
+    val wordToDocFrequency = mutableMapOf<String, MutableMap<Int, Int>>()
+
+    for (docNumber in 1..documentCount) {
+        val words = readln().split(" ")
+        val wordFrequency = words.groupingBy { it.lowercase() }.eachCount()
+
+        for ((word, freq) in wordFrequency) {
+            val docMap = wordToDocFrequency.getOrPut(word) { mutableMapOf() }
+            docMap[docNumber] = freq
         }
     }
-
-    return result
+    return wordToDocFrequency
 }
 
-private data class Document(
-    val dictionary: Map<String, Int> = mutableMapOf(),
-    val number: Int
+private fun handleRequest(
+    wordToDocFrequency: MutableMap<String, MutableMap<Int, Int>>
+): Map<Int, Int> {
 
-)
+    val documentScores = mutableMapOf<Int, Int>()
+    val requestWords = readln().split(" ").map { it.lowercase() }.toSet()
 
-private data class Request(
-    val words: Set<String> = mutableSetOf()
-)
+    for (word in requestWords) {
+        val docMap = wordToDocFrequency[word] ?: continue
+        for ((docNumber, freq) in docMap) {
+            documentScores[docNumber] = documentScores.getOrDefault(docNumber, 0) + freq
+        }
+    }
+    return documentScores
+}
+
+private fun getSortedDoc(documentScores: Map<Int, Int>): List<Int> {
+    return documentScores.entries
+        .sortedWith(compareByDescending<Map.Entry<Int, Int>> { it.value }.thenBy { it.key })
+        .map { it.key }
+        .take(5)
+}
 
 
 /**
