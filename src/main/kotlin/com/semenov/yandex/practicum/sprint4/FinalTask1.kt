@@ -21,6 +21,7 @@ https://contest.yandex.ru/contest/24414/run-report/117692917/
 Общая сложность - линейная
 
  * */
+
 fun main() {
     val documentCount = readln().toInt()
     val wordToDocFrequency = createWordIndex(documentCount)
@@ -33,32 +34,32 @@ fun main() {
     }
 }
 
-private fun createWordIndex(documentCount: Int) = buildMap<String, MutableMap<Int, Int>> {
-    for (docNumber in 1..documentCount) {
-        val wordFrequency = readln().split(" ")
-            .groupingBy { it.lowercase() }
-            .eachCount()
-
-        for ((word, freq) in wordFrequency) {
-            val docMap = getOrPut(word) { mutableMapOf() }
-            docMap[docNumber] = freq
+private fun createWordIndex(documentCount: Int): Map<String, MutableList<WordIndex>> {
+    return buildMap {
+        for (docNumber in 1..documentCount) {
+            readln().split(" ")
+                .groupingBy { it }
+                .eachCount()
+                .forEach { (word, freq) ->
+                    getOrPut(word) { mutableListOf() }.add(WordIndex(docNumber, freq))
+                }
         }
     }
 }
 
 private fun handleRequest(
-    wordToDocFrequency: Map<String, MutableMap<Int, Int>>
+    wordToDocFrequency: Map<String, MutableList<WordIndex>>
 ): Map<Int, Int> {
-    val documentScores = mutableMapOf<Int, Int>()
-    val requestWords = readln().split(" ").map { it.lowercase() }.toSet()
-
-    for (word in requestWords) {
-        val docMap = wordToDocFrequency[word] ?: continue
-        for ((docNum, freq) in docMap) {
-            documentScores[docNum] = documentScores.getOrDefault(docNum, 0) + freq
+    return buildList {
+        for (word in readln().split(" ").toSet()) {
+            val wordInfoList = wordToDocFrequency[word] ?: continue
+            add(wordInfoList)
         }
-    }
-    return documentScores
+    }.flatten()
+        .groupingBy { it.documentNumber }
+        .aggregate { _, accumulator, element, _ ->
+            accumulator?.plus(element.relevant) ?: element.relevant
+        }
 }
 
 private fun getSortedDoc(documentScores: Map<Int, Int>): List<Int> {
@@ -68,6 +69,7 @@ private fun getSortedDoc(documentScores: Map<Int, Int>): List<Int> {
         .take(5)
 }
 
+data class WordIndex(val documentNumber: Int, val relevant: Int)
 
 /**
 
