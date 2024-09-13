@@ -51,7 +51,8 @@ private fun handleRequest(
     wordToDocFrequency: Map<String, MutableList<WordIndex>>
 ): Map<Int, Int> {
     return buildList {
-        for (word in readln().split(" ").toSet()) {
+        val request = readln().split(" ").toSet()
+        for (word in request) {
             val wordInfoList = wordToDocFrequency[word] ?: continue
             add(wordInfoList)
         }
