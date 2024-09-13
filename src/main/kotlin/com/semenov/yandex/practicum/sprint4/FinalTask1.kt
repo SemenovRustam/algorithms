@@ -24,36 +24,32 @@ https://contest.yandex.ru/contest/24414/run-report/117692917/
 
 fun main() {
     val documentCount = readln().toInt()
-    val wordToDocFrequency = createWordIndex(documentCount)
+    val wordToDocFrequency = buildMap {
+        for (docNumber in 1..documentCount) {
+            createWordIndex(readln().split(" "), docNumber)
+        }
+    }
 
     val requestCount = readln().toInt()
     repeat(requestCount) {
-        val documentScores = handleRequest(wordToDocFrequency)
+        val request = readln().split(" ").toSet()
+        val documentScores = wordToDocFrequency.handleRequest(request)
         val sortedDocuments = getSortedDoc(documentScores)
         println(sortedDocuments.joinToString(" "))
     }
 }
 
-private fun createWordIndex(documentCount: Int): Map<String, MutableList<WordIndex>> {
-    return buildMap {
-        for (docNumber in 1..documentCount) {
-            readln().split(" ")
-                .groupingBy { it }
-                .eachCount()
-                .forEach { (word, freq) ->
-                    getOrPut(word) { mutableListOf() }.add(WordIndex(docNumber, freq))
-                }
+private fun MutableMap<String, MutableList<WordIndex>>.createWordIndex(document: List<String>, docNumber: Int) =
+    document.groupingBy { it }
+        .eachCount()
+        .forEach { (word, freq) ->
+            getOrPut(word) { mutableListOf() }.add(WordIndex(docNumber, freq))
         }
-    }
-}
 
-private fun handleRequest(
-    wordToDocFrequency: Map<String, MutableList<WordIndex>>
-): Map<Int, Int> {
+private fun Map<String, MutableList<WordIndex>>.handleRequest(request: Set<String>): Map<Int, Int> {
     return buildList {
-        val request = readln().split(" ").toSet()
         for (word in request) {
-            val wordInfoList = wordToDocFrequency[word] ?: continue
+            val wordInfoList = this@handleRequest[word] ?: continue
             add(wordInfoList)
         }
     }.flatten()
