@@ -1,20 +1,31 @@
 package com.semenov.yandex.practicum.sprint4
 
+import java.util.LinkedList
+import kotlin.math.absoluteValue
+
 
 /**
- https://contest.yandex.ru/contest/24414/run-report/117767125/
+https://contest.yandex.ru/contest/24414/run-report/117928783/
 
  Принцип работы:
  Реализован класс HashTable, в котором имеется поле buckets - это Массив Списков с нодами.
  Реализованы функции:
- hash(key: Int) - которая высчитывает индекс элемента по ключу
 
- findNode(key: Int) - по ключу высчитывает хеш, по которому в массиве buckets ищется нода
+ hash(key: Int) — эта функция вычисляет индекс бакета (bucket) для заданного ключа.
+ Она использует операцию взятия остатка от деления ключа на емкость (capacity) хеш-таблицы и
+ возвращает абсолютное значение результата.
 
- get(key: Int) - по ключу высчитывает хеш, по которому в массиве buckets ищется нода
+ findNode(key: Int): Node? — эта функция находит узел (Node) с заданным ключом в соответствующем бакете.
+ Она использует индекс, вычисленный хеш-функцией, для получения списка узлов в бакете.
+ Затем она ищет узел с заданным ключом в списке, используя метод find. Если узел найден, функция возвращает его;
+ в противном случае, она возвращает null.
 
- put(key: Int, value: Int) - по ключу достает ноду, если нода существует - перезаписывает значение, если ноды нет - добав-
-                            ляет новую ноду
+ get(key: Int): Int? — эта функция возвращает значение, связанное с заданным ключом, или null, если ключ не
+ найден в хеш-таблице. Она вызывает findNode для поиска узла с заданным ключом и возвращает значение этого узла,
+ если он найден; в противном случае, она возвращает null.
+
+ put(key: Int, value: Int) - вычисляет хеш ключа, по ключу достает ноду из бакета, если нода существует
+ - перезаписывает значение, если ноды нет - добавляет новую ноду
 
  delete(key: Int): Int? - по ключу ищет бакет, в нем перебирает ноды, в которых ключ совпадает с ключом ноды, удаляет, если
                             такой имеется, если нет - возвращает null
@@ -25,13 +36,13 @@ package com.semenov.yandex.practicum.sprint4
  Временная сложность:
  Метод hash(key: Int):  O(1)
 
- Метод findNode(key: Int): O(n), где  n — количество элементов в корзине.
+ Метод findNode(key: Int): В лучшем случае - O(1), в худшем O(n), где  n — количество элементов в корзине.
 
- Метод get(key: Int): O(n)
+ Метод get(key: Int): В лучшем случае - O(1), в худшем O(n), где  n — количество элементов в корзине.
 
- Метод put(key: Int, value: Int): O(n)
+ Метод put(key: Int, value: Int): В лучшем случае - O(1), в худшем O(n), где  n — количество элементов в корзине.
 
- Метод delete(key: Int) - O(k)
+ Метод delete(key: Int) - В лучшем случае - O(1), в худшем O(n), где  n — количество элементов в корзине.
 
  Пространственная сложность:
  O(n+c) n — общее количество элементов в хеш-таблице. c — количество корзин, равное значению capacity.
@@ -62,12 +73,9 @@ fun main() {
 }
 
 class HashTable(private val capacity: Int) {
-    private val buckets = Array<MutableList<Node?>>(capacity) { mutableListOf() }
+    private val buckets = Array<LinkedList<Node>>(capacity) { LinkedList() }
 
-    private fun hash(key: Int): Int {
-        val hashValue = key % capacity
-        return if (hashValue < 0) hashValue + capacity else hashValue
-    }
+    private fun hash(key: Int) = (key % capacity).absoluteValue
 
     private fun findNode(key: Int): Node? {
         val index = hash(key)
@@ -79,15 +87,11 @@ class HashTable(private val capacity: Int) {
     }
 
     fun put(key: Int, value: Int) {
-        val index = hash(key)
-        val nodes = buckets[index]
-        val existingNode = findNode(key)
-
-        if (existingNode != null) {
-            existingNode.value = value
-        } else {
-            nodes.add(Node(key, value))
-        }
+        val hash = hash(key)
+        val nodes = buckets[hash]
+        findNode(key)?.also {
+            it.value = value
+        } ?: nodes.add(Node(key, value))
     }
 
     fun delete(key: Int): Int? {
@@ -97,7 +101,7 @@ class HashTable(private val capacity: Int) {
 
         while (iterator.hasNext()) {
             val node = iterator.next()
-            if (node?.key == key) {
+            if (node.key == key) {
                 iterator.remove()
                 return node.value
             }

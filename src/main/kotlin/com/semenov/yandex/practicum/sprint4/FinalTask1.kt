@@ -1,7 +1,7 @@
 package com.semenov.yandex.practicum.sprint4
 
 /**
-https://contest.yandex.ru/contest/24414/run-report/117692917/
+https://contest.yandex.ru/contest/24414/run-report/117925321/
 
 Принцип работы: по входящим документам составляю индекс: слово -> номер документа : кол-во слов
 По словам из входящих запросов достаю из индекса номер документа и сколько раз в этом документе встречается это слово
