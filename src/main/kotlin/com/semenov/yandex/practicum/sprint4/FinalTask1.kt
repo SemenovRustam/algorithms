@@ -11,14 +11,16 @@ https://contest.yandex.ru/contest/24414/run-report/117692917/
 
 
 Временная сложность:
-Создание индекса: n^2 = обработка строки + проход по мапе
-Обработка запроса: n^2 = обработка строки + проход по строке + проход по мапе
-Общая = n^2
+Создание индекса: O(n) = трижды проходимся по коллекции, что занимает O(n), добавление елемента  в список за О(1),
+либо создание нового списка О(1)
+Обработка запроса: О(n * k) = k - кол-во слов в запросе, n - кол-во елементов после flatten
+Общая = кол-во документов * создание индекса + кол-во запросов * обработка запроса = О(n * k) + O(n)
+(константы с кол-вом запросов сократил)
 
 Пространственная сложность:
-Создание индекса - линейная, зависит от кол-ва документов
-Обработка запросов - линейная(создание мапы documentScores), зависит от кол-ва запросов
-Общая сложность - линейная
+Создание индекса - O(n * k), где n — количество уникальных слов в документе, а k — количество документов.
+Обработка запросов - O(n * k), где n — количество слов в наборе request, k - кол-во запросов
+Общая сложность - O(n * k)
 
  * */
 
@@ -34,7 +36,7 @@ fun main() {
     repeat(requestCount) {
         val request = readln().split(" ").toSet()
         val documentScores = wordToDocFrequency.handleRequest(request)
-        val sortedDocuments = getSortedDoc(documentScores)
+        val sortedDocuments = getSortedDoc(documentScores, 5)
         println(sortedDocuments.joinToString(" "))
     }
 }
@@ -59,11 +61,29 @@ private fun Map<String, MutableList<WordIndex>>.handleRequest(request: Set<Strin
         }
 }
 
-private fun getSortedDoc(documentScores: Map<Int, Int>): List<Int> {
-    return documentScores.entries
-        .sortedWith(compareByDescending<Map.Entry<Int, Int>> { it.value }.thenBy { it.key })
-        .map { it.key }
-        .take(5)
+
+private fun getSortedDoc(documentScores: Map<Int, Int>, k: Int): List<Int> {
+    val result = mutableListOf<Int>()
+    val remainingEntries = documentScores.entries.toMutableList()
+    val comparator = compareByDescending<Map.Entry<Int, Int>> { it.value }.thenBy { it.key }
+
+    for (i in 0 until k.coerceAtMost(remainingEntries.size)) {
+        var maxIndex = 0
+
+        for (j in 1 until remainingEntries.size) {
+            val currentEntry = remainingEntries[j]
+            val currentMaxEntry = remainingEntries[maxIndex]
+            if (comparator.compare(currentMaxEntry, currentEntry) > 0) {
+                maxIndex = j
+            }
+        }
+
+        result.add(remainingEntries[maxIndex].key)
+
+        remainingEntries.removeAt(maxIndex)
+    }
+
+    return result
 }
 
 data class WordIndex(val documentNumber: Int, val relevant: Int)
