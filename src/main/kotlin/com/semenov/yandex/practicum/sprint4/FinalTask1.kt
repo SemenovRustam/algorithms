@@ -33,22 +33,26 @@ fun main() {
     }
 
     val requestCount = readln().toInt()
-    repeat(requestCount) {
-        val request = readln().split(" ").toSet()
-        val documentScores = wordToDocFrequency.handleRequest(request)
-        val sortedDocuments = getSortedDoc(documentScores, 5)
-        println(sortedDocuments.joinToString(" "))
+
+    val result = buildString {
+        repeat(requestCount) {
+            val request = readln().split(" ").toSet()
+            val documentScores = wordToDocFrequency.handleRequest(request)
+            val sortedDocuments = getSortedDoc(documentScores, 5)
+            appendLine(sortedDocuments.joinToString(" "))
+        }
     }
+    println(result)
 }
 
-private fun MutableMap<String, MutableList<WordIndex>>.createWordIndex(document: List<String>, docNumber: Int) =
+private fun MutableMap<String, MutableList<DocumentRelevant>>.createWordIndex(document: List<String>, docNumber: Int) =
     document.groupingBy { it }
         .eachCount()
         .forEach { (word, freq) ->
-            getOrPut(word) { mutableListOf() }.add(WordIndex(docNumber, freq))
+            getOrPut(word) { mutableListOf() }.add(DocumentRelevant(docNumber, freq))
         }
 
-private fun Map<String, MutableList<WordIndex>>.handleRequest(request: Set<String>): Map<Int, Int> {
+private fun Map<String, MutableList<DocumentRelevant>>.handleRequest(request: Set<String>): Map<Int, Int> {
     return buildList {
         for (word in request) {
             val wordInfoList = this@handleRequest[word] ?: continue
@@ -86,7 +90,7 @@ private fun getSortedDoc(documentScores: Map<Int, Int>, k: Int): List<Int> {
     return result
 }
 
-data class WordIndex(val documentNumber: Int, val relevant: Int)
+data class DocumentRelevant(val documentNumber: Int, val relevant: Int)
 
 /**
 
