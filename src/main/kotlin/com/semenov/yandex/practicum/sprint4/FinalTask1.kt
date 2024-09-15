@@ -52,24 +52,24 @@ private fun MutableMap<String, MutableList<DocumentRelevant>>.createWordIndex(do
             getOrPut(word) { mutableListOf() }.add(DocumentRelevant(docNumber, freq))
         }
 
-private fun Map<String, MutableList<DocumentRelevant>>.handleRequest(request: Set<String>): Map<Int, Int> {
+private fun Map<String, MutableList<DocumentRelevant>>.handleRequest(request: Set<String>): List<DocumentRelevant> {
     return buildList {
         for (word in request) {
             val wordInfoList = this@handleRequest[word] ?: continue
             add(wordInfoList)
         }
     }.flatten()
-        .groupingBy { it.documentNumber }
-        .aggregate { _, accumulator, element, _ ->
-            accumulator?.plus(element.relevant) ?: element.relevant
+        .groupBy { it.documentNumber }
+        .map { (documentNumber, relevantList) ->
+            DocumentRelevant(documentNumber, relevantList.sumOf { it.relevant })
         }
 }
 
 
-private fun getSortedDoc(documentScores: Map<Int, Int>, k: Int): List<Int> {
+private fun getSortedDoc(documentScores: List<DocumentRelevant>, k: Int): List<Int> {
     val result = mutableListOf<Int>()
-    val remainingEntries = documentScores.entries.toMutableList()
-    val comparator = compareByDescending<Map.Entry<Int, Int>> { it.value }.thenBy { it.key }
+    val remainingEntries = documentScores.toMutableList()
+    val comparator = compareByDescending<DocumentRelevant> { it.relevant }.thenBy { it.documentNumber }
 
     for (i in 0 until k.coerceAtMost(remainingEntries.size)) {
         var maxIndex = 0
@@ -82,7 +82,7 @@ private fun getSortedDoc(documentScores: Map<Int, Int>, k: Int): List<Int> {
             }
         }
 
-        result.add(remainingEntries[maxIndex].key)
+        result.add(remainingEntries[maxIndex].documentNumber)
 
         remainingEntries.removeAt(maxIndex)
     }
