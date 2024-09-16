@@ -33,12 +33,15 @@ fun main() {
     }
 
     val requestCount = readln().toInt()
+    val comparator = compareByDescending<DocumentRelevant> { it.relevant }
+        .thenBy { it.documentNumber }
 
     val result = buildString {
         repeat(requestCount) {
             val request = readln().split(" ").toSet()
-            val documentScores = wordToDocFrequency.handleRequest(request)
-            val sortedDocuments = getSortedDoc(documentScores, 5)
+            val sortedDocuments =  wordToDocFrequency.handleRequest(request)
+                .getSortedDoc(comparator, 5)
+                .map { it.documentNumber }
             appendLine(sortedDocuments.joinToString(" "))
         }
     }
@@ -65,26 +68,28 @@ private fun Map<String, MutableList<DocumentRelevant>>.handleRequest(request: Se
         }
 }
 
+private fun <T> List<T>.getSortedDoc(comparator: Comparator<T>, k: Int): List<T> {
+    val result = mutableListOf<T>()
+    val selectedIndices = mutableSetOf<Int>()
 
-private fun getSortedDoc(documentScores: List<DocumentRelevant>, k: Int): List<Int> {
-    val result = mutableListOf<Int>()
-    val remainingEntries = documentScores.toMutableList()
-    val comparator = compareByDescending<DocumentRelevant> { it.relevant }.thenBy { it.documentNumber }
+    for (i in 0 until k.coerceAtMost(size)) {
+        var maxIndex: Int? = null
 
-    for (i in 0 until k.coerceAtMost(remainingEntries.size)) {
-        var maxIndex = 0
+        for (j in indices) {
+            if (j in selectedIndices) continue
 
-        for (j in 1 until remainingEntries.size) {
-            val currentEntry = remainingEntries[j]
-            val currentMaxEntry = remainingEntries[maxIndex]
-            if (comparator.compare(currentMaxEntry, currentEntry) > 0) {
+            val currentEntry = this[j]
+            val currentMaxEntry = maxIndex?.let { this[it] }
+
+            if (currentMaxEntry == null || comparator.compare(currentMaxEntry,currentEntry ) > 0) {
                 maxIndex = j
             }
         }
 
-        result.add(remainingEntries[maxIndex].documentNumber)
-
-        remainingEntries.removeAt(maxIndex)
+        maxIndex?.let {
+            result.add(this[it])
+            selectedIndices.add(it)
+        }
     }
 
     return result
