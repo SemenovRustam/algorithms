@@ -5,7 +5,7 @@ import kotlin.math.absoluteValue
 
 
 /**
-https://contest.yandex.ru/contest/24414/run-report/117928783/
+https://contest.yandex.ru/contest/24414/run-report/118016778/
 
  Принцип работы:
  Реализован класс HashTable, в котором имеется поле buckets - это Массив Списков с нодами.
@@ -36,7 +36,8 @@ https://contest.yandex.ru/contest/24414/run-report/117928783/
  Временная сложность:
  Метод hash(key: Int):  O(1)
 
- Метод findNode(key: Int): В лучшем случае - O(1), в худшем O(n), где  n — количество элементов в корзине.
+ Метод findNode(key: Int): В лучшем случае - O(1), в худшем O(n), где  n — количество элементов в корзине,
+амортизированная - при использование хеш-таблицы O(1) - благодаря рехешированию.
 
  Метод get(key: Int): В лучшем случае - O(1), в худшем O(n), где  n — количество элементов в корзине.
 
@@ -73,13 +74,13 @@ fun main() {
 }
 
 class HashTable(private val capacity: Int) {
-    private val buckets = Array<LinkedList<Node>>(capacity) { LinkedList() }
+    private val buckets = Array(capacity) { LinkedList<Node>() }
 
     private fun hash(key: Int) = (key % capacity).absoluteValue
 
     private fun findNode(key: Int): Node? {
         val index = hash(key)
-        return buckets[index].find { it?.key == key }
+        return buckets[index].find { it.key == key }
     }
 
     fun get(key: Int): Int? {
