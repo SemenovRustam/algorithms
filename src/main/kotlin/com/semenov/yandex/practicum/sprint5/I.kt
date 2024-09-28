@@ -21,4 +21,3 @@ fun catalan(n: Int): Long {
 
     return catalan[n]
 }
-
