@@ -21,16 +21,16 @@ class Node {
 // <template>
 
 fun treeSolution(head: Node?): Int {
-    return helper(head, "")
+    return helper(head, 0)
 }
 
-private fun helper(node: Node?, path: String): Int {
+private fun helper(node: Node?, path: Int): Int {
     if (node == null) return 0
 
-    val newPath = path + node.value
+    val newPath = path * 10 + node.value
 
     return if (node.left == null && node.right == null) {
-        newPath.toInt()
+        newPath
     } else {
         helper(node.left, newPath) + helper(node.right, newPath)
     }
