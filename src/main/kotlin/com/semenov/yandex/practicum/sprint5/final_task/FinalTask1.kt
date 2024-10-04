@@ -26,7 +26,7 @@ fun main() {
 }
 
 fun <T> MutableList<T>.heapSort(comparator: Comparator<T>) {
-    for (i in size downTo 0) {
+    for (i in size / 2 downTo 0) {
         siftDown(comparator, i, size)
     }
 
