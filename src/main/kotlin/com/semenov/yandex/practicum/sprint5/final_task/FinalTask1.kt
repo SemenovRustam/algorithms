@@ -18,7 +18,6 @@ fun main() {
         .thenBy { it.fine }
         .thenBy { it.name }
 
-
     person.heapSort(memberComparator)
 
     val result = person.joinToString("\n") { it.name }
@@ -27,12 +26,10 @@ fun main() {
 }
 
 fun <T> MutableList<T>.heapSort(comparator: Comparator<T>) {
-// Построение кучи
-    for (i in size / 2 - 1 downTo 0) {
+    for (i in size downTo 0) {
         siftDown(comparator, i, size)
     }
 
-    // Извлечение элементов из кучи
     for (i in size - 1 downTo 1) {
         swap(this, 0, i)
         siftDown(comparator, 0, i)
@@ -40,26 +37,18 @@ fun <T> MutableList<T>.heapSort(comparator: Comparator<T>) {
 }
 
 fun <T> MutableList<T>.siftDown(comparator: Comparator<T>, start: Int, end: Int) {
-    var root = start
-    while (true) {
-        var child = 2 * root + 1
-        if (child >= end) break
+    val left = 2 * start + 1
+    val right = left + 1
 
-        // Если у корня есть правый дочерний элемент и он больше левого, используем правый
-        if (child + 1 < end && comparator.compare(this[child], this[child + 1]) < 0) {
-            child++
-        }
+    if (left >= end) return
 
-        // Если корень меньше дочернего элемента, меняем их местами
-        if (comparator.compare(this[root], this[child]) < 0) {
-            swap(this, root, child)
-            root = child
-        } else {
-            break
-        }
+    val largestIndex = if (right < end && comparator.compare(this[left], this[right]) < 0) right else left
+
+    if (comparator.compare(this[start], this[largestIndex]) < 0) {
+        swap(this, start, largestIndex)
+        siftDown(comparator, largestIndex, end)
     }
 }
-
 
 data class Person(
     val name: String,
