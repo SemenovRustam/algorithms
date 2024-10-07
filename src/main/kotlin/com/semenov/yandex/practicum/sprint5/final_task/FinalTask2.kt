@@ -4,34 +4,25 @@ class Node(var left: Node?, var right: Node?, var value: Int)
 
 fun remove(root: Node?, key: Int): Node? {
     if (root == null) return null
-    val value = root.value
-    val left = root.left
-    if (key < value) {
-        root.left = remove(left, key)
+
+    if (key < root.value) {
+        root.left = remove(root.left, key)
+    } else if (key > root.value) {
+        root.right = remove(root.right, key)
     } else {
-        val right = root.right
-        if (key > value) {
-            root.right = remove(right, key)
-        } else {
-            // Node with only one child or no child
-            if (left == null) return right
-            else if (right == null) return left
+        if (root.left == null) return root.right
+        else if (root.right == null) return root.left
 
-            // Node with two children: Get the inorder successor (smallest in the right subtree)
-            root.value = minValue(right)
-
-            // Delete the inorder successor
-            root.right = remove(right, value)
-        }
+        root.value = minValue(root.right!!)
+        root.right = remove(root.right, root.value)
     }
     return root
 }
 
 fun minValue(node: Node): Int {
     var current = node
-    val left = current.left
-    while (left != null) {
-        current = left
+    while (current.left != null) {
+        current = current.left!!
     }
     return current.value
 }
