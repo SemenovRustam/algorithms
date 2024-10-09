@@ -3,7 +3,7 @@ package com.semenov.yandex.practicum.sprint5.final_task
 class Node(var left: Node?, var right: Node?, var value: Int)
 
 /**
-https://contest.yandex.ru/contest/24810/run-report/120043276/
+https://contest.yandex.ru/contest/24810/run-report/120085252/
 Принцип работы:
 функция remove(root: Node?, key: Int) - получаем на вход корень дерева и значение ключа, которое необходимо удалить
 Если корень равен null, тогда возвращаем null.
@@ -24,7 +24,7 @@ minValue(node: Node) - в корне дерева ищем самое левое
 Временная сложность:
 minValue - так как функция проходит по всему дереву, пока не найдет самое левое значение - то сложность O(h)
 remove - ищем узел для удаления - O(h), если у узла два поддерева - то ищем минимальное значение в правом поддереве - O(h),
-Общая: O(h) - в худшем случае, в лучшем случае O(log n).
+Общая: O(n) - в худшем случае, в лучшем случае O(log n).
 
 Пространственная сложность определяется кол-вом вызова функции remove - O(h)
 
@@ -35,13 +35,11 @@ fun remove(root: Node?, key: Int): Node? {
         root == null -> return null
         key < root.value -> root.left = remove(root.left, key)
         key > root.value -> root.right = remove(root.right, key)
-        else -> when {
-            root.left == null -> return root.right
-            root.right == null -> return root.left
-            else -> {
-                root.value = minValue(root.right!!)
-                root.right = remove(root.right, root.value)
-            }
+        root.left == null -> return root.right
+        root.right == null -> return root.left
+        else -> {
+            root.value = minValue(root.right!!)
+            root.right = remove(root.right, root.value)
         }
     }
 
