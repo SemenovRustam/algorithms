@@ -12,14 +12,12 @@ fun main() {
         graph[from].add(to)
     }
 
-    // Perform topological sort
     for (i in 1..n) {
         if (colors[i] == Color.WHITE) {
             topologicalSort(graph, colors, i, stack)
         }
     }
 
-    // Print the result
     println(stack.reversed().joinToString(" "))
 }
 
@@ -36,7 +34,7 @@ fun topologicalSort(
         }
     }
     colors[v] = Color.BLACK
-    stack.add(v) // Add to the beginning of the stack
+    stack.add(v)
 }
 
 /**
