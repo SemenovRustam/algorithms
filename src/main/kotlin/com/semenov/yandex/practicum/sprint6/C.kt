@@ -18,7 +18,7 @@ fun main() {
     println(result.joinToString(" "))
 }
 
-fun dfs(start: Int, graph: List<List<Int>>, colors: Array<Color>) {
+private fun dfs(start: Int, graph: List<List<Int>>, colors: Array<Color>) {
     colors[start] = Color.GREY
     result.add(start)
     for (w in graph[start].sorted()) {
