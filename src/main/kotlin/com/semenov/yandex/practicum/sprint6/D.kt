@@ -19,7 +19,7 @@ fun main() {
     println(result.joinToString(" "))
 }
 
-fun bfs(graph: List<MutableList<Int>>, colors: MutableList<Color>, s: Int) {
+private fun bfs(graph: List<MutableList<Int>>, colors: MutableList<Color>, s: Int) {
     val planned = LinkedList<Int>()
     planned.add(s)
     result.add(s)
