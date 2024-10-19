@@ -44,9 +44,9 @@ fun canReach(start: Int, end: Int, graph: Array<MutableList<Int>>): Boolean {
 
     while (planned.isNotEmpty()) {
         val city = planned.poll()
-        if (city == end) {
-            return true
-        }
+
+        if (city == end) return true
+
         for (neighbor in graph[city]) {
             if (!visited[neighbor]) {
                 visited[neighbor] = true
