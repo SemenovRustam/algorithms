@@ -1,8 +1,6 @@
 package com.semenov.yandex.practicum.sprint6.final_task
 
 
-import java.util.LinkedList
-
 fun main() {
     val n = readln().toInt()
     val graphR = Array(n + 1) { mutableListOf<Int>() }
@@ -26,9 +24,15 @@ fun main() {
 }
 
 fun isOptimalMap(n: Int, graphR: Array<MutableList<Int>>, graphB: Array<MutableList<Int>>): Boolean {
-    for (A in 1 until n) {
-        for (B in A + 1..n) {
-            if (canReach(A, B, graphR) && canReach(A, B, graphB)) {
+    for (i in 1 until n) {
+        val visitedR = BooleanArray(n + 1)
+        val visitedB = BooleanArray(n + 1)
+
+        dfs(graphR, i, visitedR)
+        dfs(graphB, i, visitedB)
+
+        for (j in (i + 1)..n) {
+            if (visitedR[j] && visitedB[j]) {
                 return false
             }
         }
@@ -36,25 +40,13 @@ fun isOptimalMap(n: Int, graphR: Array<MutableList<Int>>, graphB: Array<MutableL
     return true
 }
 
-fun canReach(start: Int, end: Int, graph: Array<MutableList<Int>>): Boolean {
-    val visited = BooleanArray(graph.size) { false }
-    val planned = LinkedList<Int>()
-    planned.add(start)
+fun dfs(graph: Array<MutableList<Int>>, start: Int, visited: BooleanArray) {
     visited[start] = true
-
-    while (planned.isNotEmpty()) {
-        val city = planned.poll()
-
-        if (city == end) return true
-
-        for (neighbor in graph[city]) {
-            if (!visited[neighbor]) {
-                visited[neighbor] = true
-                planned.add(neighbor)
-            }
+    for (neighbor in graph[start]) {
+        if (!visited[neighbor]) {
+            dfs(graph, neighbor, visited)
         }
     }
-    return false
 }
 
 
