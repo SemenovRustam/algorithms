@@ -1,50 +1,56 @@
 package com.semenov.yandex.practicum.sprint6.final_task
 
+import java.util.Stack
+
 fun main() {
     val n = readln().toInt()
-    val graphR = Array(n + 1) { mutableListOf<Int>() }
-    val graphB = Array(n + 1) { mutableListOf<Int>() }
+    val matrix = Array(n + 1) { mutableListOf<Int>() }
+    val visited = Array(n + 1) { Color.WHITE }
 
     for (i in 1 until n) {
         readln().toCharArray().forEachIndexed { index, char ->
+            val target = i + index + 1
             if (char == 'R') {
-                graphR[i].add(index + i + 1)
+                matrix[i].add(target)
             } else {
-                graphB[i].add(index + i + 1)
+                matrix[target].add(i)
             }
         }
     }
 
-    if (isOptimalMap(n, graphR, graphB)) {
-        println("YES")
-    } else {
-        println("NO")
-    }
+    val result = if (matrix.checkOptimal(visited, n)) "YES" else "NO"
+
+    println(result)
 }
 
-fun isOptimalMap(n: Int, graphR: Array<MutableList<Int>>, graphB: Array<MutableList<Int>>): Boolean {
-    val visited = Array(n + 1) { 0 } // 0 - не посещен, 1 - посещен по R, 2 - посещен по B
+fun Array<MutableList<Int>>.checkOptimal(visited: Array<Color>, n: Int): Boolean {
+    for (i in 1..n) {
+        val stack = Stack<Int>()
+        stack.push(i)
 
-    for (i in 1 until n) {
-        if (visited[i] == 0) {
-            if (!dfs(graphR, i, visited, 1) || !dfs(graphB, i, visited, 2)) {
-                return false
+        while (stack.isNotEmpty()) {
+            val vertex = stack.peek()
+
+            if (visited[vertex] == Color.WHITE) {
+                visited[vertex] = Color.GRAY
+
+                for (neighbor in this[vertex]) {
+                    if (visited[neighbor] == Color.WHITE) {
+                        stack.push(neighbor)
+                    } else if (visited[neighbor] == Color.GRAY) {
+                        return false
+                    }
+                }
+            } else {
+                visited[vertex] = Color.BLACK
+                stack.pop()
             }
         }
     }
+
     return true
 }
 
-fun dfs(graph: Array<MutableList<Int>>, start: Int, visited: Array<Int>, type: Int): Boolean {
-    visited[start] = type
-    for (neighbor in graph[start]) {
-        if (visited[neighbor] == 0) {
-            if (!dfs(graph, neighbor, visited, type)) {
-                return false }
-        } else if (visited[neighbor] != type) {
-            // Если сосед уже был посещен другим типом дороги
-            return false
-        }
-    }
-    return true
+enum class Color {
+    WHITE, GRAY, BLACK
 }
