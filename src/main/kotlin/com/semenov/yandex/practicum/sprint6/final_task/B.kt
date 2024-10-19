@@ -25,29 +25,28 @@ fun main() {
 
 fun Array<MutableList<Int>>.checkOptimal(visited: Array<Color>, n: Int): Boolean {
     for (i in 1..n) {
-        val stack = Stack<Int>()
-        stack.push(i)
+        val planned = Stack<Int>()
+        planned.push(i)
 
-        while (stack.isNotEmpty()) {
-            val vertex = stack.peek()
+        while (planned.isNotEmpty()) {
+            val vertex = planned.peek()
 
             if (visited[vertex] == Color.WHITE) {
                 visited[vertex] = Color.GRAY
 
                 for (neighbor in this[vertex]) {
                     if (visited[neighbor] == Color.WHITE) {
-                        stack.push(neighbor)
+                        planned.push(neighbor)
                     } else if (visited[neighbor] == Color.GRAY) {
                         return false
                     }
                 }
             } else {
                 visited[vertex] = Color.BLACK
-                stack.pop()
+                planned.pop()
             }
         }
     }
-
     return true
 }
 
