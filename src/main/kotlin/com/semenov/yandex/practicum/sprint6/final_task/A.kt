@@ -1,7 +1,7 @@
 package com.semenov.yandex.practicum.sprint6.final_task
 
 /**
- * https://contest.yandex.ru/contest/25070/run-report/121322618/
+ * https://contest.yandex.ru/contest/25070/run-report/121708319/
  * Принцип работы:
  *
  * addedVertex(vertex: Int) - добавляет вершину в множество добавленных вершин,
@@ -20,7 +20,7 @@ package com.semenov.yandex.practicum.sprint6.final_task
  *
  * Временная сложность:
  * addedVertex() - добавление и удаление из - 0(1),
- * Фильтрация и добавление рёбер в edges: 0(n log m)
+ * Фильтрация и добавление рёбер в edges: 0(E log V)
  *
  * getMaxMst():
  * 0(E log V) - тк алгоритм использует приоритетную очередь для хранения ребер,
@@ -29,7 +29,7 @@ package com.semenov.yandex.practicum.sprint6.final_task
  * Общая сложность - 0(E log V)
  *
  * Пространственная сложность:
- * Тк алгоритм  используут память для хранения вершин и ребер, то пространственная сложность равна 0(e + m)
+ * Тк алгоритм  используeт память для хранения вершин и ребер, то пространственная сложность равна 0(V + E)
  *
  * */
 
@@ -53,16 +53,6 @@ fun main() {
         graph[v - 1].add(Vertex(u, weight))
     }
 
-    if (n > 1 && m == 0) {
-        println(FAILED_MESSAGE)
-        return
-    }
-
-    if (m == 0) {
-        println(m)
-        return
-    }
-
     graph.getMaxMst(added, vertices)
 
     val result = if (addedCount < n) {
@@ -76,7 +66,7 @@ fun main() {
 
 private fun List<MutableList<Vertex>>.getMaxMst(added: BooleanArray, vertices: PriorityQueue<Vertex>) {
     addedVertex(1, added, vertices)
-    while (addedCount < this.size && vertices.isNotEmpty()) {
+    while (addedCount < added.size - 1 && vertices.isNotEmpty()) {
         val maxEdge = vertices.poll()
 
         if (!added[maxEdge.v]) {
