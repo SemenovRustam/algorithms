@@ -44,16 +44,16 @@ private const val FAILED_MESSAGE = "Oops! I did it again"
 fun main() {
     val (n, m) = readln().split(" ").map { it.toInt() }
     val added = BooleanArray(n + 1) { false }
-    val vertices = PriorityQueue<Vertex> { a, b -> b.weight - a.weight }
-    val graph = List(n) { mutableListOf<Vertex>() }
+    val edges = PriorityQueue<Edge> { a, b -> b.weight - a.weight }
+    val graph = List(n) { mutableListOf<Edge>() }
 
     repeat(m) {
         val (u, v, weight) = readln().split(" ").map { it.toInt() }
-        graph[u - 1].add(Vertex(v, weight))
-        graph[v - 1].add(Vertex(u, weight))
+        graph[u - 1].add(Edge(u, v, weight))
+        graph[v - 1].add(Edge(v, u, weight))
     }
 
-    graph.getMaxMst(added, vertices)
+    graph.getMaxMst(added, edges)
 
     val result = if (addedCount < n) {
         FAILED_MESSAGE
@@ -64,26 +64,26 @@ fun main() {
     println(result)
 }
 
-private fun List<MutableList<Vertex>>.getMaxMst(added: BooleanArray, vertices: PriorityQueue<Vertex>) {
-    addedVertex(1, added, vertices)
-    while (addedCount < added.size - 1 && vertices.isNotEmpty()) {
-        val maxEdge = vertices.poll()
+private fun List<MutableList<Edge>>.getMaxMst(added: BooleanArray, edges: PriorityQueue<Edge>) {
+    addedVertex(1, added, edges)
+    while (addedCount < added.size - 1 && edges.isNotEmpty()) {
+        val maxEdge = edges.poll()
 
-        if (!added[maxEdge.v]) {
+        if (!added[maxEdge.to]) {
             maxSpanningTreeWeight += maxEdge.weight
-            addedVertex(maxEdge.v, added, vertices)
+            addedVertex(maxEdge.to, added, edges)
         }
     }
 }
 
-private fun List<MutableList<Vertex>>.addedVertex(vertex: Int, added: BooleanArray, vertices: PriorityQueue<Vertex>) {
+private fun List<MutableList<Edge>>.addedVertex(vertex: Int, added: BooleanArray, edges: PriorityQueue<Edge>) {
     added[vertex] = true
     ++addedCount
     this[vertex - 1].forEach {
-        if (!added[it.v]) {
-            vertices.add(it)
+        if (!added[it.to]) {
+            edges.add(it)
         }
     }
 }
 
-private data class Vertex(val v: Int, val weight: Int)
+private data class Edge(val from: Int, val to: Int, val weight: Int)
