@@ -1,7 +1,7 @@
 package com.semenov.yandex.practicum.sprint6.final_task
 
 /**
- * https://contest.yandex.ru/contest/25070/run-report/121708319/
+ * https://contest.yandex.ru/contest/25070/run-report/121722933/
  * Принцип работы:
  *
  * Инициализация:
@@ -75,7 +75,7 @@ private const val FAILED_MESSAGE = "Oops! I did it again"
 fun main() {
     val (n, m) = readln().split(" ").map { it.toInt() }
     val added = BooleanArray(n + 1) { false }
-    val edges = PriorityQueue<Edge> { a, b -> b.weight - a.weight }
+    val edges = PriorityQueue<Edge>(compareByDescending { it.weight })
     val graph = List(n) { mutableListOf<Edge>() }
 
     repeat(m) {
@@ -97,7 +97,7 @@ fun main() {
 
 private fun List<MutableList<Edge>>.getMaxMst(added: BooleanArray, edges: PriorityQueue<Edge>) {
     addedVertex(1, added, edges)
-    while (addedCount < added.size - 1 && edges.isNotEmpty()) {
+    while (addedCount < added.size && edges.isNotEmpty()) {
         val maxEdge = edges.poll()
 
         if (!added[maxEdge.to]) {
