@@ -34,68 +34,66 @@ package com.semenov.yandex.practicum.sprint6.final_task
  * */
 
 
-import java.util.*
+import java.util.PriorityQueue
 
-private val added = mutableSetOf<Int>()
-private val notAdded = mutableSetOf<Int>()
-private val edges = PriorityQueue<Pair<Int, Int>> { a, b -> b.second - a.second }
-private val minimumSpanningTree = mutableListOf<Pair<Int, Int>>()
-private val input = readln().split(" ").map { it.toInt() }
-private val n = input[0]
-private val m = input[1]
-private val graph = List(n + 1) { mutableListOf<Pair<Int, Int>>() }
+
+private var maxSpanningTreeWeight = 0
+private var addedCount = 0
 private const val FAILED_MESSAGE = "Oops! I did it again"
 
 fun main() {
+    val (n, m) = readln().split(" ").map { it.toInt() }
+    val added = BooleanArray(n + 1) { false }
+    val vertices = PriorityQueue<Vertex> { a, b -> b.weight - a.weight }
+    val graph = List(n) { mutableListOf<Vertex>() }
+
     repeat(m) {
         val (u, v, weight) = readln().split(" ").map { it.toInt() }
-        graph[u].add(v to weight)
-        graph[v].add(u to weight)
-        notAdded.add(u)
-        notAdded.add(v)
+        graph[u - 1].add(Vertex(v, weight))
+        graph[v - 1].add(Vertex(u, weight))
     }
 
     if (n > 1 && m == 0) {
         println(FAILED_MESSAGE)
         return
     }
+
     if (m == 0) {
         println(m)
         return
     }
 
-    if (notAdded.isEmpty()) {
-        println(FAILED_MESSAGE)
-        return
-    }
+    graph.getMaxMst(added, vertices)
 
-    getMaxMst()
-
-    val result = if (notAdded.isNotEmpty()) {
+    val result = if (addedCount < n) {
         FAILED_MESSAGE
     } else {
-        minimumSpanningTree.sumOf { it.second }
+        maxSpanningTreeWeight
     }
 
     println(result)
 }
 
-private fun getMaxMst() {
-    val vertex = notAdded.first()
-    addedVertex(vertex)
+private fun List<MutableList<Vertex>>.getMaxMst(added: BooleanArray, vertices: PriorityQueue<Vertex>) {
+    addedVertex(1, added, vertices)
+    while (addedCount < this.size && vertices.isNotEmpty()) {
+        val maxEdge = vertices.poll()
 
-    while (notAdded.isNotEmpty() && edges.isNotEmpty()) {
-        val maxEdge = edges.poll()
-
-        if (maxEdge.first in notAdded) {
-            minimumSpanningTree.add(maxEdge)
-            addedVertex(maxEdge.first)
+        if (!added[maxEdge.v]) {
+            maxSpanningTreeWeight += maxEdge.weight
+            addedVertex(maxEdge.v, added, vertices)
         }
     }
 }
 
-private fun addedVertex(vertex: Int) {
-    added += vertex
-    notAdded -= vertex
-    graph[vertex].filter { it.first in notAdded }.forEach { edges.add(it) }
+private fun List<MutableList<Vertex>>.addedVertex(vertex: Int, added: BooleanArray, vertices: PriorityQueue<Vertex>) {
+    added[vertex] = true
+    ++addedCount
+    this[vertex - 1].forEach {
+        if (!added[it.v]) {
+            vertices.add(it)
+        }
+    }
 }
+
+private data class Vertex(val v: Int, val weight: Int)
