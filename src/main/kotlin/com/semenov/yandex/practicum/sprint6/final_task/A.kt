@@ -54,10 +54,10 @@ package com.semenov.yandex.practicum.sprint6.final_task
  * Фильтрация и добавление рёбер в edges: 0(E log V)
  *
  * getMaxMst():
- * 0(V log E) - тк алгоритм использует приоритетную очередь для хранения ребер,
+ * 0(E log V) - тк алгоритм использует приоритетную очередь для хранения ребер,
  * исходящих из собранного множества остова
  *
- * Общая сложность - 0(E log V)
+ * Общая сложность - 0(V log E)
  *
  * Пространственная сложность:
  * Тк алгоритм  используeт память для хранения вершин и ребер, то пространственная сложность равна 0(V + E)
@@ -68,7 +68,6 @@ package com.semenov.yandex.practicum.sprint6.final_task
 import java.util.PriorityQueue
 
 
-private var maxSpanningTreeWeight = 0
 private var addedCount = 0
 private const val FAILED_MESSAGE = "Oops! I did it again"
 
@@ -76,15 +75,15 @@ fun main() {
     val (n, m) = readln().split(" ").map { it.toInt() }
     val added = BooleanArray(n + 1) { false }
     val edges = PriorityQueue<Edge>(compareByDescending { it.weight })
-    val graph = List(n) { mutableListOf<Edge>() }
+    val graph = Array(n) { mutableListOf<Edge>() }
 
     repeat(m) {
         val (u, v, weight) = readln().split(" ").map { it.toInt() }
-        graph[u - 1].add(Edge(u, v, weight))
-        graph[v - 1].add(Edge(v, u, weight))
+        graph[u - 1].add(Edge(v - 1, weight))
+        graph[v - 1].add(Edge(u -1, weight))
     }
 
-    graph.getMaxMst(added, edges)
+    val maxSpanningTreeWeight = graph.getMaxMst(added, edges)
 
     val result = if (addedCount < n) {
         FAILED_MESSAGE
@@ -95,7 +94,8 @@ fun main() {
     println(result)
 }
 
-private fun List<MutableList<Edge>>.getMaxMst(added: BooleanArray, edges: PriorityQueue<Edge>) {
+private fun Array<MutableList<Edge>>.getMaxMst(added: BooleanArray, edges: PriorityQueue<Edge>): Int {
+    var maxSpanningTreeWeight = 0
     addedVertex(1, added, edges)
     while (addedCount < added.size && edges.isNotEmpty()) {
         val maxEdge = edges.poll()
@@ -105,16 +105,17 @@ private fun List<MutableList<Edge>>.getMaxMst(added: BooleanArray, edges: Priori
             addedVertex(maxEdge.to, added, edges)
         }
     }
+    return maxSpanningTreeWeight
 }
 
-private fun List<MutableList<Edge>>.addedVertex(vertex: Int, added: BooleanArray, edges: PriorityQueue<Edge>) {
+private fun Array<MutableList<Edge>>.addedVertex(vertex: Int, added: BooleanArray, edges: PriorityQueue<Edge>) {
     added[vertex] = true
     ++addedCount
-    this[vertex - 1].forEach {
+    this[vertex].forEach {
         if (!added[it.to]) {
             edges.add(it)
         }
     }
 }
 
-private data class Edge(val from: Int, val to: Int, val weight: Int)
+private data class Edge(val to: Int, val weight: Int)
