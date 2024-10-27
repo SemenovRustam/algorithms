@@ -30,19 +30,12 @@ fun getMaxFlowers(matrix: Array<IntArray>, n: Int, m: Int): Int {
         dp[n - 1][j] = dp[n - 1][j - 1] + matrix[n - 1][j]
     }
 
-    // Заполняем оставшиеся ячейки
+
     for (i in n - 2 downTo 0) {
         for (j in 1 until m) {
-            dp[i][j] = maxOf(dp[i + 1][j], dp[i][j - 1]) + matrix[i][j]
+            dp[i][j] = maxOf(dp[i][j - 1], dp[i + 1][j]) + matrix[i][j]
         }
     }
 
-    println()
-    dp.forEach {
-        println(it.joinToString(" "))
-    }
-
-
-    // Возвращаем максимальное количество цветочков в правом верхнем углу
     return dp[0][m - 1]
 }
