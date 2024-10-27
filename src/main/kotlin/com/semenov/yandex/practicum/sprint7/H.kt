@@ -14,7 +14,7 @@ fun main() {
     println(getMaxFlowers(matrix, n, m))
 }
 
-fun getMaxFlowers(matrix: Array<IntArray>, n: Int, m: Int): Int {
+private fun getMaxFlowers(matrix: Array<IntArray>, n: Int, m: Int): Int {
     val dp = Array(n) { IntArray(m) }
 
     // Начальная точка (нижний левый угол)
