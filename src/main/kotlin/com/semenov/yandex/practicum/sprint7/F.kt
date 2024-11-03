@@ -6,7 +6,7 @@ fun main() {
     println(countWays(n, k))
 }
 
-fun countWays(n: Int, k: Int): Int {
+private fun countWays(n: Int, k: Int): Int {
     val mod = 1_000_000_007
     val dp = IntArray(n + 1)
     dp[1] = 1
