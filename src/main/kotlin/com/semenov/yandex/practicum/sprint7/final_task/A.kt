@@ -4,18 +4,18 @@ fun main() {
     val s = readln()
     val t = readln()
 
-    levenshteinRange(s, t)
+    val result = levenshteinRange(s, t)
+    println(result)
 }
 
-fun levenshteinRange(s: String, t: String) {
+fun levenshteinRange(s: String, t: String): Int {
     val dp = Array(s.length + 1) { IntArray(t.length + 1) }
 
-    // Инициализация первой строки и первого столбца
     for (i in 0..s.length) {
-        dp[i][0] = i // Удаление всех символов из s
+        dp[i][0] = i
     }
     for (j in 0..t.length) {
-        dp[0][j] = j // Вставка всех символов в t
+        dp[0][j] = j
     }
 
     for (i in 1..s.length) {
@@ -32,5 +32,5 @@ fun levenshteinRange(s: String, t: String) {
         }
     }
 
-    println(dp[s.length][t.length])
+    return dp[s.length][t.length]
 }
