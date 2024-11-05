@@ -49,29 +49,27 @@ fun main() {
     println(result)
 }
 
-fun levenshteinRange(s: String, t: String): Int {
-    val dp = Array(s.length + 1) { IntArray(t.length + 1) }
 
-    for (i in 0..s.length) {
-        dp[i][0] = i
-    }
+fun levenshteinRange(s: String, t: String): Int {
+    val current = IntArray(t.length + 1)
+    val previous = IntArray(t.length + 1)
+
     for (j in 0..t.length) {
-        dp[0][j] = j
+        previous[j] = j
     }
 
     for (i in 1..s.length) {
+        current[0] = i
         for (j in 1..t.length) {
-            if (s[i - 1] == t[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1]
-            } else {
-                dp[i][j] = minOf(
-                    dp[i - 1][j] + 1,
-                    dp[i][j - 1] + 1,
-                    dp[i - 1][j - 1] + 1
-                )
-            }
+            val coast = if (s[i - 1] == t[j - 1]) 0 else 1
+            current[j] = minOf(
+                previous[j] + 1,
+                current[j - 1] + 1,
+                previous[j - 1] + coast
+            )
         }
+        current.copyInto(previous)
     }
 
-    return dp[s.length][t.length]
+    return previous.last()
 }
