@@ -1,7 +1,7 @@
 package com.semenov.yandex.practicum.sprint7.final_task
 
 /**
- * https://contest.yandex.ru/contest/25597/run-report/123854061/
+ * https://contest.yandex.ru/contest/25597/run-report/123893752/
  *
  * https://ru.wikipedia.org/wiki/%D0%A0%D0%B0%D1%81%D1%81%D1%82%D0%BE%D1%8F%D0%BD%D0%B8%D0%B5_%D0%9B%D0%B5%D0%B2%D0%B5%D0%BD%D1%88%D1%82%D0%B5%D0%B9%D0%BD%D0%B0
  *
@@ -54,25 +54,22 @@ fun main() {
 
 
 fun levenshteinRange(s: String, t: String): Int {
-    val current = IntArray(t.length + 1)
-    val previous = IntArray(t.length + 1)
-
-    for (j in 0..t.length) {
-        previous[j] = j
-    }
+    var current = IntArray(t.length + 1)
+    var previous = IntArray(t.length + 1) { it }
 
     for (i in 1..s.length) {
         current[0] = i
         for (j in 1..t.length) {
             val coast = if (s[i - 1] == t[j - 1]) 0 else 1
-            current[j] = minOf(
-                previous[j] + 1,
-                current[j - 1] + 1,
-                previous[j - 1] + coast
-            )
+            val deleted = previous[j] + 1
+            val added = current[j - 1] + 1
+            val changed = previous[j - 1] + coast
+            current[j] = minOf(deleted, added, changed)
         }
-        current.copyInto(previous)
-    }
+        val temp = current
+        current = previous
+        previous = temp
 
-    return current.last()
+    }
+    return previous.last()
 }
