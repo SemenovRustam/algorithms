@@ -12,17 +12,15 @@ fun main() {
 
 fun isValidData(s1: String, s2: String): Boolean {
     if ((s1.length - s2.length).absoluteValue > 1) return false
-
     var count = 0
-    // длина строк равна
+
     if (s1.length == s2.length) {
         for (i in s1.indices) {
             if (s1[i] != s2[i]) ++count
             if (count > 1) return false
         }
     } else {
-        var (more, less) = getStringByDescending(s1, s2)
-
+        var (more, less) = s1.getStringByDescending(s2)
         for (i in more.indices) {
             if (more[i] != less[i]) {
                 ++count
@@ -42,14 +40,7 @@ fun isValidData(s1: String, s2: String): Boolean {
     return true
 }
 
-
-private fun getStringByDescending(s1: String, s2: String): Pair<String, String> {
-    return if (s1.length > s2.length) {
-        s1 to s2
-    } else {
-        s2 to s1
-    }
-}
+private fun String.getStringByDescending(s2: String) = if (length > s2.length) this to s2 else s2 to this
 
 /**
  * B. Пограничный контроль
