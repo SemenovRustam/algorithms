@@ -1,21 +1,39 @@
 package com.semenov.yandex.practicum.sprint8
 
+
+
 fun main() {
     val trie = Trie()
 
-    repeat(readln().toInt()) {
+    val n = readln().toInt()
+    val text = List(n) { readln() }
+
+    val m = readln().toInt()
+    repeat(m) {
         trie.insert(readln())
     }
 
-    val m = readln().toInt()
-    val patterns = List(m) { readln() }
+    val result = buildList {
+        for (word in text) {
+            add(getMatchingLines(word, trie))
+        }
+    }
 
-     getMatchingLines(patterns, trie)
 
+    for (word in result.sortedBy { it }) {
+        word?.also { println(it) }
+    }
 }
 
-fun getMatchingLines(pattern: List<String>, trie: Trie) {
-    TODO("Not yet implemented")
+fun getMatchingLines(s: String, trie: Trie): String? {
+    var current = trie.root
+    for (char in s) {
+        if (char.isUpperCase() && char in current.children) {
+            current = current.children[char]!!
+            if (current.isTerminated) return s
+        }
+    }
+    return null
 }
 
 class TrieNode {
