@@ -1,65 +1,65 @@
 package com.semenov.yandex.practicum.sprint8
 
-
-
 fun main() {
     val trie = Trie()
-
     val n = readln().toInt()
-    val text = List(n) { readln() }
-
-    val m = readln().toInt()
-    repeat(m) {
-        trie.insert(readln())
-    }
-
-    val result = buildList {
-        for (word in text) {
-            add(getMatchingLines(word, trie))
+    val words = buildList<String> {
+        repeat(n) {
+            val word = readln()
+            add(word)
+            trie.insert(word)
         }
     }
-
-
-    for (word in result.sortedBy { it }) {
-        word?.also { println(it) }
+    val m = readln().toInt()
+    val patterns = buildList {
+        repeat(m) {
+            add(readln())
+        }
+    }
+    val result = mutableListOf<String>()
+    for (pattern in patterns) {
+        if (pattern.isBlank()) {
+            println((words).joinToString("\n"))
+        } else {
+            getMatchingLines(pattern, trie)?.takeIf { it.isNotEmpty() }
+                ?.sorted()
+                ?.forEach { println(it) }
+                ?: println()
+        }
     }
 }
 
-fun getMatchingLines(s: String, trie: Trie): String? {
+fun getMatchingLines(pattern: String, trie: Trie): List<String> {
     var current = trie.root
-    for (char in s) {
-        if (char.isUpperCase() && char in current.children) {
+    var patternIndex = 0
+    var matchIndex = 0
+    for (char in pattern) {
+        if (char in current.children) {
             current = current.children[char]!!
-            if (current.isTerminated) return s
+            matchIndex++
         }
+        patternIndex++
     }
-    return null
+    return if (patternIndex <= matchIndex) current.result else emptyList()
 }
 
 class TrieNode {
     val children = mutableMapOf<Char, TrieNode>()
     var isTerminated: Boolean = false
+    var result = mutableListOf<String>()
 }
 
 class Trie {
     val root = TrieNode()
 
     fun insert(word: String) {
+        val pattern = word.filter { it.isUpperCase() }
         var current = root
 
-        for (c in word) {
+        for (c in pattern) {
             current = current.children.getOrPut(c) { TrieNode() }
+            current.result.add(word)
         }
         current.isTerminated = true
-    }
-
-    fun search(word: String): Boolean {
-        var current = root
-
-        for (c in word) {
-            current = current.children.getOrElse(c) { return false }
-        }
-
-        return current.isTerminated
     }
 }
