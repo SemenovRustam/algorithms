@@ -16,10 +16,10 @@ fun main() {
             add(readln())
         }
     }
-    val result = mutableListOf<String>()
+
     for (pattern in patterns) {
         if (pattern.isBlank()) {
-            println((words).joinToString("\n"))
+            println((words.sorted()).joinToString("\n"))
         } else {
             getMatchingLines(pattern, trie)?.takeIf { it.isNotEmpty() }
                 ?.sorted()
