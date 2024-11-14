@@ -11,16 +11,11 @@ fun main() {
         }
     }
 
-    val m = readln().toInt()
-    val patterns = buildList {
-        repeat(m) {
-            add(readln())
-        }
-    }
-
     val default = words.sorted().joinToString("\n")
 
-    for (pattern in patterns) {
+    repeat(readln().toInt()) {
+        val pattern = readln()
+
         val result = if (pattern.isBlank()) {
             default
         } else {
@@ -29,7 +24,6 @@ fun main() {
                 ?.joinToString("\n")
                 ?: ""
         }
-
         println(result)
     }
 }
