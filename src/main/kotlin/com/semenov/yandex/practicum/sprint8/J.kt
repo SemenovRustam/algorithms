@@ -10,6 +10,7 @@ fun main() {
             trie.insert(word)
         }
     }
+
     val m = readln().toInt()
     val patterns = buildList {
         repeat(m) {
@@ -17,15 +18,19 @@ fun main() {
         }
     }
 
+    val default = words.sorted().joinToString("\n")
+
     for (pattern in patterns) {
-        if (pattern.isBlank()) {
-            println((words.sorted()).joinToString("\n"))
+        val result = if (pattern.isBlank()) {
+            default
         } else {
-            getMatchingLines(pattern, trie)?.takeIf { it.isNotEmpty() }
+            getMatchingLines(pattern, trie).takeIf { it.isNotEmpty() }
                 ?.sorted()
-                ?.forEach { println(it) }
-                ?: println()
+                ?.joinToString("\n")
+                ?: ""
         }
+
+        println(result)
     }
 }
 
