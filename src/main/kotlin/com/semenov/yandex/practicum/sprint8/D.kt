@@ -8,7 +8,7 @@ fun main() {
         }
     }
 
-    val result = getMaxPrefix(lines, trie)
+    val result = if (lines.size == 1) lines.first().length else getMaxPrefix(lines, trie)
 
     println(result)
 }
@@ -16,12 +16,17 @@ fun main() {
 fun getMaxPrefix(strings: List<String>, trie: Trie1): Int {
     var currentMax = 0
     var minLength = 0
-    for (s in strings.sorted()) {
+
+    for ((currentIndex, s) in strings.sorted().withIndex()) {
         if (minLength == 0 || s.length < minLength) {
             minLength = s.length
         }
 
-        val maxIndex = trie.insert(s.take(minLength))
+        val maxIndex = trie.insert(s.take(minLength), currentIndex)
+
+        if (maxIndex == -1) {
+            return 0
+        }
         if (maxIndex > currentMax) {
             currentMax = maxIndex
         }
@@ -38,16 +43,19 @@ class TrieNode1 {
 class Trie1() {
     var root = TrieNode1()
 
-    fun insert(s: String): Int {
+    fun insert(s: String, index: Int): Int {
         var current = root
         var max = 0
-        var currentIndex = 0
 
         for (c in s) {
-            if (c in current.children && currentIndex == max) {
+            if (c in current.children) {
                 max++
+            } else {
+                if (index > 0 && current.maxIndex == 0) {
+                    return -1
+                }
             }
-            currentIndex++
+
             current = current.children.getOrPut(c) { TrieNode1() }
             current.maxIndex = max
         }
