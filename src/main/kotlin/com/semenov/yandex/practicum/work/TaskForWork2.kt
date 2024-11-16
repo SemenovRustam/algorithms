@@ -1,5 +1,7 @@
 package com.semenov.yandex.practicum.work
 
+import com.semenov.yandex.practicum.sprint3.test
+
 
 fun main() {
     val text = readln()
@@ -10,12 +12,7 @@ fun main() {
         trie.insert(readln())
     }
 
-    val result = if (canSegment(text, trie)) {
-        "YES"
-    } else {
-        "NO"
-    }
-
+    val result = if (canSegment(text, trie)) "YES" else "NO"
     println(result)
 }
 
@@ -31,7 +28,7 @@ fun canSegment(text: String, trie: Trie): Boolean {
         for (j in i until n) {
             val char = text[j]
             node = node.children[char] ?: break
-            if (node.isEndOfWord) {
+            if (node.terminated) {
                 booleans[j + 1] = true
             }
         }
@@ -42,7 +39,7 @@ fun canSegment(text: String, trie: Trie): Boolean {
 
 class TrieNode {
     val children = mutableMapOf<Char, TrieNode>()
-    var isEndOfWord = false
+    var terminated = false
 }
 
 class Trie {
@@ -53,7 +50,7 @@ class Trie {
         for (char in word) {
             node = node.children.getOrPut(char) { TrieNode() }
         }
-        node.isEndOfWord = true
+        node.terminated = true
     }
 }
 
