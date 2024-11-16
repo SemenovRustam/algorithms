@@ -1,52 +1,27 @@
 package com.semenov.yandex.practicum.sprint8
 
+import java.io.BufferedReader
+import java.io.InputStreamReader
+
 fun main() {
-    val trie = TrieF()
-    val n = readln().toInt()
+    val reader = BufferedReader(InputStreamReader(System.`in`))
+    val n = reader.readLine().toInt()
+    val frequencyMap = HashMap<String, Int>()
 
-    val lines = mutableListOf<String>()
-    repeat(n) {
-        lines.add(readln())
+    for (i in 0 until n) {
+        val word = reader.readLine()
+        frequencyMap[word] = frequencyMap.getOrDefault(word, 0) + 1
     }
 
-    val result = getFreqWord(lines, trie)
-    println(result)
-}
+    var maxFrequency = 0
+    var resultWord = ""
 
-fun getFreqWord(lines: MutableList<String>, trie: TrieF): String {
-    var currentFreqWordCount = 0
-    var currentFreqWord = ""
-
-    for (word in lines) {
-        val terminatedCount = trie.insert(word)
-        if (terminatedCount > currentFreqWordCount ||
-            (currentFreqWord.isNotEmpty() && word < currentFreqWord && terminatedCount == currentFreqWordCount)
-        ) {
-            currentFreqWordCount = terminatedCount
-            currentFreqWord = word
+    for ((word, frequency) in frequencyMap) {
+        if (frequency > maxFrequency || (frequency == maxFrequency && word < resultWord)) {
+            maxFrequency = frequency
+            resultWord = word
         }
     }
 
-    return currentFreqWord
-}
-
-
-class TrieNodeF {
-    val children = mutableMapOf<Char, TrieNodeF>()
-    var terminatedCount = 0
-}
-
-class TrieF {
-    var root = TrieNodeF()
-
-    fun insert(s: String): Int {
-        var current = root
-
-        for (char in s) {
-            current = current.children.getOrPut(char) { TrieNodeF() }
-        }
-        current.terminatedCount += 1
-
-        return current.terminatedCount
-    }
+    println(resultWord)
 }
