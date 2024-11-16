@@ -1,7 +1,5 @@
 package com.semenov.yandex.practicum.work
 
-import com.semenov.yandex.practicum.sprint3.test
-
 
 fun main() {
     val text = readln()
@@ -21,14 +19,15 @@ fun canSegment(text: String, trie: Trie): Boolean {
     val booleans = BooleanArray(n + 1)
     booleans[0] = true
 
-    for (i in 0 until n) {
+    for (i in text.indices) {
         if (!booleans[i]) continue
 
-        var node = trie.root
+        var current = trie.root
         for (j in i until n) {
             val char = text[j]
-            node = node.children[char] ?: break
-            if (node.terminated) {
+            current = current.children[char] ?: break
+
+            if (current.terminated) {
                 booleans[j + 1] = true
             }
         }
