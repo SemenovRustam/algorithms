@@ -64,3 +64,27 @@ class Trie1() {
     }
 }
 
+//fun main() {
+//    val n = readln().toInt()
+//    val strings = List(n) { readln() }
+//
+//    val result = longestCommonPrefix(strings)
+//
+//    println(result)
+//}
+//
+//fun longestCommonPrefix(strings: List<String>): Int {
+//    if (strings.isEmpty()) return 0
+//
+//    var prefix = strings[0]
+//
+//    for (i in 1 until strings.size) {
+//        while (strings[i].indexOf(prefix) != 0) {
+//            prefix = prefix.substring(0, prefix.length - 1)
+//            if (prefix.isEmpty()) return 0
+//        }
+//    }
+//
+//    return prefix.length
+//}
+
