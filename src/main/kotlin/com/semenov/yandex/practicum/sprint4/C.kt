@@ -16,16 +16,31 @@ fun main() {
 fun canBeReplaced(word1: String, word2: String): Boolean {
     if (word1.length != word2.length) return false
 
-    val minLength = minOf(word1.length, word2.length)
-    buildMap<Char, Char> {
-        for (index in 0 until minLength) {
-            if (!this.containsKey(word1[index]) && this.containsValue(word2[index])) {
+    val associate1 = mutableMapOf<Char, Char>()
+    val associate2 = mutableMapOf<Char, Char>()
+
+    for (i in word1.indices) {
+        val char1 = word1[i]
+        val char2 = word2[i]
+
+        if (char1 in associate1) {
+            val value = associate1[char1]
+            if (char2 != value) {
                 return false
             }
-            this[word1[index]] = word2[index]
+        } else {
+            associate1[char1] = char2
+        }
+
+        if (char2 in associate2) {
+            val value = associate2[char2]
+            if (value != char1) {
+                return false
+            }
+        } else {
+            associate2[char2] = char1
         }
     }
-
     return true
 }
 

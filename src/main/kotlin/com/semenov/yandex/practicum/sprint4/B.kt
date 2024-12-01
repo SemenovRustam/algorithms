@@ -18,18 +18,17 @@ private fun getMaxRounds(array: IntArray): Int {
     var currentPrefixSum = 0
     var maxLength = 0
 
-    for (index in ints.indices) {
-        currentPrefixSum += ints[index]
+    for (i in ints.indices) {
+        currentPrefixSum += ints[i]
 
-        if (prefixSumIndex.containsKey(currentPrefixSum)) {
-            val length = index - prefixSumIndex[currentPrefixSum]!!
-            if (length > maxLength) {
-                maxLength = length
-            }
+        if (currentPrefixSum in prefixSumIndex) {
+            val length = i - prefixSumIndex[currentPrefixSum]!!
+            maxLength = maxOf(maxLength, length)
         } else {
-            prefixSumIndex[currentPrefixSum] = index
+            prefixSumIndex[currentPrefixSum] = i
         }
     }
+
     return maxLength
 }
 

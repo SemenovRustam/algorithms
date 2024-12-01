@@ -11,26 +11,17 @@ fun main() {
 private fun polynomialHash(base: Long, module: Long, s: String): Long {
     var hashValue = 0L
     var currentPower = 1L // q^0 = 1
-    val n = s.length
 
     // Идем по строке в обратном порядке
-    for (i in n - 1 downTo 0) {
-        val code = s[i].code
-        val l = code * currentPower
-        hashValue = (hashValue + l) % module
-        // Убедитесь, что hashValue всегда положительный
-        if (hashValue < 0) {
-            hashValue += module
-        }
-        currentPower = (currentPower * base) % module
-        // Убедитесь, что currentPower всегда положительный
-        if (currentPower < 0) {
-            currentPower += module
-        }
+    for (i in s.indices.reversed()) {
+        val code = s[i].code.toLong()
+        hashValue = (hashValue + code * currentPower) % module
+        currentPower = (currentPower * base) % module //не возводим в стемень, чтоб на каждой итерации не умножать с 0 на само себя заново
     }
 
     return hashValue
 }
+
 /**
 D. Полиномиальный хеш
 Все языки	Python 3.11.4

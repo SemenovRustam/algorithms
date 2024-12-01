@@ -1,7 +1,6 @@
 package com.semenov.yandex.practicum.sprint8.final_task
 
 
-
 /**
  * https://contest.yandex.ru/contest/26133/run-report/125821730/
  *
@@ -30,11 +29,9 @@ package com.semenov.yandex.practicum.sprint8.final_task
  * */
 
 
-import java.util.Stack
-
 fun main() {
     val n = readln().toInt()
-    val words = List(n) { getUnpackString(readln()) }.sorted()
+    val words = List(n) { getUnpackString(readln()) }
 
     val maxPrefix = getMaxPrefix(words)
 
@@ -42,18 +39,8 @@ fun main() {
 }
 
 fun getMaxPrefix(strings: List<String>): String {
-    var first = strings.first()
-    var last = strings.first()
-
-    for (str in strings) {
-        if (str < first) {
-            first = str
-        }
-
-        if (str > last) {
-            last = str
-        }
-    }
+    val first = strings.minBy { it }
+    val last = strings.maxBy { it }
 
     var index = 0
     for (i in first.indices) {
@@ -64,31 +51,34 @@ fun getMaxPrefix(strings: List<String>): String {
     return first.substring(0 until index)
 }
 
-private fun getUnpackString(s: String): String {
-    var index = 0
+private fun getUnpackString(s: String) = buildString {
+    s.unpack(this)
+}
 
-    fun unpack(): String {
-        val digit = Stack<Int>()
-        val current = StringBuilder()
 
-        while (index < s.length) {
-            val char = s[index]
-            index++
+private fun String.unpack(accumulator: StringBuilder, startIndex: Int = 0): Int {
+    var index = startIndex
+    var multiplier = 0
 
-            when {
-                char.isLetter() -> current.append(char)
-                char.isDigit() -> digit.push(char.digitToInt())
-                char == '[' -> {
-                    val repeatedString = unpack()
-                    val multiplier = digit.pop()
-                    current.append(repeatedString.repeat(multiplier))
+    while (index < this.length) {
+        val char = this[index]
+        index++
+
+        when {
+            char.isDigit() -> multiplier = char.digitToInt()
+            char.isLetter() -> accumulator.append(char)
+            char == '[' -> {
+                val nestedStartIndex = accumulator.length
+                index = this.unpack(accumulator, index)
+
+                val repeatedSegment = accumulator.substring(nestedStartIndex, accumulator.length)
+                repeat(multiplier - 1) {
+                    accumulator.append(repeatedSegment)
                 }
-
-                char == ']' -> return current.toString()
             }
-        }
-        return current.toString()
-    }
 
-    return unpack()
+            char == ']' -> return index
+        }
+    }
+    return index
 }

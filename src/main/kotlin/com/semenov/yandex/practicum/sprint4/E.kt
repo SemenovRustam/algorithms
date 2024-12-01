@@ -7,23 +7,25 @@ fun main() {
 
 // Функция для вычисления хеша строки
 fun hashString(s: String): Long {
-    val q = 1000L
-    val R = 123987123L
-    var h = 0L
+    val base = 1000L
+    val mod = 123_987_123L
     var power = 1L
-    for (char in s.reversed()) {
-        h = (h + char.code * power) % R
-        power = (power * q) % R
+    var hash = 0L
+    for (i in s.indices.reversed()) {
+        hash = (hash + s[i].code * power) % mod
+        power = (power * base) % mod
     }
-    return h
+    return hash
 }
 
 // Генерация случайной строки
 fun generateRandomString(length: Int): String {
     val chars = "abcdefghijklmnopqrstuvwxyz"
-    return (1..length)
-        .map { chars.random() }
-        .joinToString("")
+    return buildString {
+        repeat(length) {
+            append(chars.random())
+        }
+    }
 }
 
 // Поиск коллизий

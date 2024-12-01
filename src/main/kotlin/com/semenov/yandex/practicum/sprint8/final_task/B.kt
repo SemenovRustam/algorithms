@@ -1,7 +1,7 @@
 package com.semenov.yandex.practicum.sprint8.final_task
 
 /**
- * https://contest.yandex.ru/contest/26133/run-report/125184251/
+ * https://contest.yandex.ru/contest/26133/run-report/125830449/
  *
  * Принцип работы:
  *
@@ -23,14 +23,14 @@ package com.semenov.yandex.practicum.sprint8.final_task
  *
  * Искомый результат будет лежать в последней ячейка массива.
  *
- * Временная сложность: заполнение бора: O(n * m), m - длина текста, n - кол-во слов
- * canSegment: O(n * m), где n - длина текста, m - длина слова
- * Общая O(n * m)
+ * Временная сложность: заполнение бора: O(n), n - кол-во слов
+ * canSegment: O(L * m), где L - длина текста, m - длина слова
+ * Общая O(L * m)
  *
  * Пространственная сложность:
  * canSegment - хранит массив длинной n - O(n)
- * trie - O(n * m)
- * Общая: O(n * m)
+ * trie - худший случай (если символы не совпадают) O(m * n),  в лучшем случае при совпадении префикса - O(n)
+ * Общая: O(m * n)
  *
  * */
 
@@ -64,6 +64,7 @@ fun canSegment(text: String, trie: Trie): Boolean {
                 booleans[j + 1] = true
             }
         }
+        if (booleans[n]) return true
     }
 
     return booleans[n]
