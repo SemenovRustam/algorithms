@@ -1,27 +1,24 @@
 package com.semenov.yandex.practicum.sprint4
 
 fun main() {
-    val string = readln()
+    val s = readln()
 
-    println(getMaxLength(string))
+    val maxUniqueLength = getMaxUniqueLength(s)
+    println(maxUniqueLength)
 }
 
-private fun getMaxLength(string: String): Int {
-    var start = 0
-    var max = 0
-    val lastIndex = mutableMapOf<Char, Int>()
+fun getMaxUniqueLength(s: String): Int {
+    val position = mutableMapOf<Char, Int>()
+    var result = 0
+    var prev = 0
 
-    for (i in string.indices) {
-        val char = string[i]
-
-        if (char in lastIndex && lastIndex[char]!! >= start) {
-            start = i + 1
-        }
-
-        lastIndex[char] = i
-        max = maxOf(max, i - start + 1)
+    for (i in s.indices) {
+        prev = maxOf(prev, position[s[i]] ?: 0)
+        position[s[i]] = i + 1
+        result = maxOf(result, i + 1 - prev)
     }
-    return max
+
+    return result
 }
 
 /**

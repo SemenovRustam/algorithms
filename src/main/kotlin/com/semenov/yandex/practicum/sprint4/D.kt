@@ -16,7 +16,7 @@ private fun polynomialHash(base: Long, module: Long, s: String): Long {
     for (i in s.indices.reversed()) {
         val code = s[i].code.toLong()
         hashValue = (hashValue + code * currentPower) % module
-        currentPower = (currentPower * base) % module //не возводим в стемень, чтоб на каждой итерации не умножать с 0 на само себя заново
+        currentPower = (currentPower * base) % module //не возводим в степень, чтоб на каждой итерации не умножать с 0 на само себя заново
     }
 
     return hashValue

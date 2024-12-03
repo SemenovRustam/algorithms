@@ -33,26 +33,26 @@ fun main() {
 
 fun getDuplex(target: Int, nums: LongArray): Set<List<Long>> {
     val sumInfo = mutableMapOf<Long, MutableList<Pair<Int, Int>>>()
-    val duplex = mutableSetOf<List<Long>>()
+    val result = mutableSetOf<List<Long>>()
 
     for (i in nums.indices) {
         for (j in (i + 1) until nums.size) {
-            val localTarget = target - nums[i] - nums[j]
-            if (sumInfo.containsKey(localTarget)) {
-                val pairs = sumInfo[localTarget]!!
-                for ((first, second) in pairs) {
+            val s = target - nums[i] - nums[j]
+            if (s in sumInfo) {
+
+                for ((first, second) in sumInfo[s]!!) {
                     if (first != i && first != j && second != i && second != j) {
-                        duplex.add(
+                        result.add(
                             listOf(nums[first], nums[second], nums[i], nums[j]).sorted()
                         )
                     }
                 }
             }
-            sumInfo.computeIfAbsent(nums[i] + nums[j]) { mutableListOf() }.add(Pair(i, j))
+            sumInfo.computeIfAbsent(nums[i] + nums[j]) { mutableListOf() }.add(i to j)
         }
     }
 
-    return duplex
+    return result
 }
 
 /**
