@@ -16,8 +16,7 @@ fun findAnagram(words: List<String>): Map<Int, MutableList<Int>> {
     val result = mutableMapOf<Int, MutableList<Int>>()
 
     words.forEachIndexed { i, word ->
-        val key = word.hash()
-        result.getOrPut(key) { mutableListOf() }.add(i)
+        result.getOrPut(word.hash()) { mutableListOf() }.add(i)
     }
 
     return result
