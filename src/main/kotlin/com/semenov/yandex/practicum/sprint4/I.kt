@@ -1,20 +1,38 @@
 package com.semenov.yandex.practicum.sprint4
 
 fun main() {
-    readln().toInt()
+    readln()
     val words = readln().split(" ")
-    val anagram = getAnagram(words)
 
-    anagram.values.forEach {
-        println(it.joinToString(" "))
+    val anagram = findAnagram(words)
+
+    for (value in anagram.values) {
+        println(value.joinToString(" "))
     }
+
 }
 
-private fun getAnagram(words: List<String>) = buildMap<String, MutableList<Int>> {
-    words.forEachIndexed { index, word ->
-        val key = word.toCharArray().sorted().joinToString("")
-        this.computeIfAbsent(key) { mutableListOf() }.add(index)
+fun findAnagram(words: List<String>): Map<Int, MutableList<Int>> {
+    val result = mutableMapOf<Int, MutableList<Int>>()
+
+    words.forEachIndexed { i, word ->
+        val key = word.hash()
+        result.getOrPut(key) { mutableListOf() }.add(i)
     }
+
+    return result
+}
+
+
+private fun String.hash(): Int {
+    var hash = 31
+    val module = 1_000_000_7
+
+    for (i in indices) {
+        hash = (hash * this[i].code) % module
+    }
+
+    return hash
 }
 
 /**
