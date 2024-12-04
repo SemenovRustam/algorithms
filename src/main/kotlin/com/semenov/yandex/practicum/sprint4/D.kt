@@ -9,18 +9,29 @@ fun main() {
 }
 
 private fun polynomialHash(base: Long, module: Long, s: String): Long {
-    var hashValue = 0L
-    var currentPower = 1L // q^0 = 1
+    var hash = 0L
 
-    // Идем по строке в обратном порядке
-    for (i in s.indices.reversed()) {
-        val code = s[i].code.toLong()
-        hashValue = (hashValue + code * currentPower) % module
-        currentPower = (currentPower * base) % module //не возводим в степень, чтоб на каждой итерации не умножать с 0 на само себя заново
+    for (char in s) {
+        hash = (hash * base + char.code) % module
     }
 
-    return hashValue
+    return hash
 }
+
+
+//private fun polynomialHash(base: Long, module: Long, s: String): Long {
+//    var hashValue = 0L
+//    var currentPower = 1L // q^0 = 1
+//
+//    // Идем по строке в обратном порядке
+//    for (i in s.indices.reversed()) {
+//        val code = s[i].code.toLong()
+//        hashValue = (hashValue + code * currentPower) % module
+//        currentPower = (currentPower * base) % module //не возводим в степень, чтоб на каждой итерации не умножать с 0 на само себя заново
+//    }
+//
+//    return hashValue
+//}
 
 /**
 D. Полиномиальный хеш
@@ -72,4 +83,4 @@ HaSH
 
 Вывод
 56156
-* */
+ * */
