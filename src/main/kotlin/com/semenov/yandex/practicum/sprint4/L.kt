@@ -3,9 +3,9 @@ package com.semenov.yandex.practicum.sprint4
 fun main() {
     // Чтение входных данных
     val (n, k) = readln().split(" ").map(String::toInt)
-    val inputString = readln().trim()
+    val inputString = readln()
 
-    val base = 47L
+    val base = 31L
     val mod = 1_000_000_007L
 
     // Основная логика
@@ -16,16 +16,15 @@ fun main() {
 
     // Вычисление начального хеша
     var hash = getHash(inputString.take(n), base, mod)
-    counter[hash] = (counter[hash] ?: 0) + 1
+    counter[hash] = counter.getOrDefault(hash, 0) + 1
     hashToPos[hash] = 0
 
     // Сдвиг хеша по строке
     for (i in 1..inputString.length - n) {
         // Обновление хеша: убираем символ str[i - 1] и добавляем str[i + n - 1]
-        hash = (hash + mod - (inputString[i - 1].code * power % mod)) % mod
-        hash = (hash * base % mod + inputString[i + n - 1].code) % mod
+        hash = (hash + mod - inputString[i - 1].code * power % mod) % mod
+        hash = (hash * base + inputString[i + n - 1].code) % mod
 
-//        counter[hash] = (counter[hash] ?: 0) + 1
         counter[hash] = counter.getOrDefault(hash, 0) + 1
 
         // Если это первый раз, сохраняем позицию
@@ -35,7 +34,8 @@ fun main() {
 
         // Если подстрока встречается k раз, добавляем позицию в результат
         if (counter[hash] == k) {
-            result.add(hashToPos[hash]!!)
+            val index = hashToPos[hash]!!
+            result.add(index)
         }
     }
 
