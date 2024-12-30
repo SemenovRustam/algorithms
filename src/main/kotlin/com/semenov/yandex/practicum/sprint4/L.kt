@@ -20,11 +20,12 @@ fun main() {
     hashToPos[hash] = 0
 
     // Сдвиг хеша по строке
-    for (i in 1..inputString.length - n) {
-        // Обновление хеша: убираем символ str[i - 1] и добавляем str[i + n - 1]
+    for (i in 1..(inputString.length - n)) { // Изменено на `..` для включения последней подстроки
+        // Обновление хеша: убираем символ inputString[i - 1] и добавляем inputString[i + n - 1]
         hash = (hash + mod - inputString[i - 1].code * power % mod) % mod
-        hash = (hash * base + inputString[i + n - 1].code) % mod
+        hash = (hash * base % mod + inputString[i + n - 1].code) % mod
 
+        // Увеличиваем счетчик для текущего хеша
         counter[hash] = counter.getOrDefault(hash, 0) + 1
 
         // Если это первый раз, сохраняем позицию
@@ -34,8 +35,7 @@ fun main() {
 
         // Если подстрока встречается k раз, добавляем позицию в результат
         if (counter[hash] == k) {
-            val index = hashToPos[hash]!!
-            result.add(index)
+            result.add(hashToPos[hash]!!)
         }
     }
 
